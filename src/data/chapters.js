@@ -50,7 +50,7 @@ export const chapters = [
   { id: '27-voice', num: '27', title: '음성 모드', category: 'automation' },
 
   // 배포
-  { id: '28-acpx', num: '28', title: 'acpx: 에이전트 간 통신', category: 'deploy' },
+  { id: '28-acpx', num: '28', title: 'acpx: 에이전트 간 통신', category: 'automation' },
   { id: '29-docker', num: '29', title: 'Docker 배포', category: 'deploy' },
   { id: '30-profiles', num: '30', title: '프로필 (다중 에이전트)', category: 'deploy' },
   { id: '31-api-server', num: '31', title: 'API 서버', category: 'deploy' },
