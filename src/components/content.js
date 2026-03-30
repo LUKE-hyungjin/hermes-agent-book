@@ -1,17 +1,39 @@
 import { marked } from 'marked';
 import hljs from 'highlight.js';
 
-// Configure marked with highlight.js
+// Custom marked renderer with highlight.js
+const renderer = new marked.Renderer();
+
+renderer.code = function ({ text, lang }) {
+  const language = lang && hljs.getLanguage(lang) ? lang : 'plaintext';
+  const highlighted = hljs.highlight(text, { language }).value;
+  return `<pre class="hljs"><code class="language-${language}">${highlighted}</code></pre>`;
+};
+
 marked.setOptions({
-  highlight(code, lang) {
-    if (lang && hljs.getLanguage(lang)) {
-      return hljs.highlight(code, { language: lang }).value;
-    }
-    return hljs.highlightAuto(code).value;
-  },
+  renderer,
   breaks: true,
   gfm: true,
 });
+
+// Pre-process :::tip / :::warning / :::info admonition blocks
+// Converts them to <div class="xxx-box"> before marked.parse
+function processAdmonitions(markdown) {
+  const iconMap = {
+    tip: '💡',
+    warning: '⚠️',
+    info: 'ℹ️',
+  };
+
+  return markdown.replace(
+    /^:::(tip|warning|info)\s*\n([\s\S]*?)^:::\s*$/gm,
+    (match, type, content) => {
+      const icon = iconMap[type] || '';
+      const parsed = marked.parseInline(content.trim());
+      return `<div class="${type}-box"><strong>${icon} ${type.charAt(0).toUpperCase() + type.slice(1)}</strong><p class="mb-0">${parsed}</p></div>`;
+    }
+  );
+}
 
 let contentEl = null;
 
@@ -26,7 +48,8 @@ export async function renderChapter(id) {
   contentEl.innerHTML = `<div class="flex items-center justify-center py-20"><div class="animate-spin h-8 w-8 border-2 border-blue-500 border-t-transparent rounded-full"></div></div>`;
 
   try {
-    const markdown = await loadMarkdown(id);
+    const raw = await loadMarkdown(id);
+    const markdown = processAdmonitions(raw);
     contentEl.innerHTML = `<div class="prose max-w-none content-enter">${marked.parse(markdown)}</div>`;
     contentEl.scrollTop = 0;
   } catch (err) {
