@@ -1,0 +1,2780 @@
+
+============================================================
+PAGE: getting-started/updating
+============================================================
+- 
+- Getting Started
+- Updating & UninstallingOn this page
+# Updating & Uninstalling
+
+## Updating​
+
+Update to the latest version with a single command:
+
+```
+hermes update
+```
+
+This pulls the latest code, updates dependencies, and prompts you to configure any new options that were added since your last update.
+tip`hermes update` automatically detects new configuration options and prompts you to add them. If you skipped that prompt, you can manually run `hermes config check` to see missing options, then `hermes config migrate` to interactively add them.
+
+### Updating from Messaging Platforms​
+
+You can also update directly from Telegram, Discord, Slack, or WhatsApp by sending:
+
+```
+/update
+```
+
+This pulls the latest code, updates dependencies, and restarts the gateway.
+
+### Manual Update​
+
+If you installed manually (not via the quick installer):
+
+```
+cd /path/to/hermes-agentexport VIRTUAL_ENV="$(pwd)/venv"# Pull latest code and submodulesgit pull origin maingit submodule update --init --recursive# Reinstall (picks up new dependencies)uv pip install -e ".[all]"uv pip install -e "./tinker-atropos"# Check for new config optionshermes config checkhermes config migrate   # Interactively add any missing options
+```
+
+## Uninstalling​
+
+```
+hermes uninstall
+```
+
+The uninstaller gives you the option to keep your configuration files (`~/.hermes/`) for a future reinstall.
+
+### Manual Uninstall​
+
+```
+rm -f ~/.local/bin/hermesrm -rf /path/to/hermes-agentrm -rf ~/.hermes            # Optional — keep if you plan to reinstall
+```
+
+infoIf you installed the gateway as a system service, stop and disable it first:
+```
+hermes gateway stop# Linux: systemctl --user disable hermes-gateway# macOS: launchctl remove ai.hermes.gateway
+```
+Edit this page
+
+
+============================================================
+PAGE: getting-started/learning-path
+============================================================
+- 
+- Getting Started
+- Learning PathOn this page
+# Learning Path
+
+Hermes Agent can do a lot — CLI assistant, Telegram/Discord bot, task automation, RL training, and more. This page helps you figure out where to start and what to read based on your experience level and what you're trying to accomplish.
+Start HereIf you haven't installed Hermes Agent yet, begin with the Installation guide and then run through the Quickstart. Everything below assumes you have a working installation.
+
+## How to Use This Page​
+
+- Know your level? Jump to the experience-level table and follow the reading order for your tier.
+
+- Have a specific goal? Skip to By Use Case and find the scenario that matches.
+
+- Just browsing? Check the Key Features table for a quick overview of everything Hermes Agent can do.
+
+## By Experience Level​
+
+LevelGoalRecommended ReadingTime EstimateBeginnerGet up and running, have basic conversations, use built-in toolsInstallation → Quickstart → CLI Usage → Configuration~1 hourIntermediateSet up messaging bots, use advanced features like memory, cron jobs, and skillsSessions → Messaging → Tools → Skills → Memory → Cron~2–3 hoursAdvancedBuild custom tools, create skills, train models with RL, contribute to the projectArchitecture → Adding Tools → Creating Skills → RL Training → Contributing~4–6 hours
+
+## By Use Case​
+
+Pick the scenario that matches what you want to do. Each one links you to the relevant docs in the order you should read them.
+
+### "I want a CLI coding assistant"​
+
+Use Hermes Agent as an interactive terminal assistant for writing, reviewing, and running code.
+
+- Installation
+
+- Quickstart
+
+- CLI Usage
+
+- Code Execution
+
+- Context Files
+
+- Tips & Tricks
+
+tipPass files directly into your conversation with context files. Hermes Agent can read, edit, and run code in your projects.
+
+### "I want a Telegram/Discord bot"​
+
+Deploy Hermes Agent as a bot on your favorite messaging platform.
+
+- Installation
+
+- Configuration
+
+- Messaging Overview
+
+- Telegram Setup
+
+- Discord Setup
+
+- Voice Mode
+
+- Use Voice Mode with Hermes
+
+- Security
+
+For full project examples, see:
+
+- Daily Briefing Bot
+
+- Team Telegram Assistant
+
+### "I want to automate tasks"​
+
+Schedule recurring tasks, run batch jobs, or chain agent actions together.
+
+- Quickstart
+
+- Cron Scheduling
+
+- Batch Processing
+
+- Delegation
+
+- Hooks
+
+tipCron jobs let Hermes Agent run tasks on a schedule — daily summaries, periodic checks, automated reports — without you being present.
+
+### "I want to build custom tools/skills"​
+
+Extend Hermes Agent with your own tools and reusable skill packages.
+
+- Tools Overview
+
+- Skills Overview
+
+- MCP (Model Context Protocol)
+
+- Architecture
+
+- Adding Tools
+
+- Creating Skills
+
+tipTools are individual functions the agent can call. Skills are bundles of tools, prompts, and configuration packaged together. Start with tools, graduate to skills.
+
+### "I want to train models"​
+
+Use reinforcement learning to fine-tune model behavior with Hermes Agent's built-in RL training pipeline.
+
+- Quickstart
+
+- Configuration
+
+- RL Training
+
+- Provider Routing
+
+- Architecture
+
+tipRL training works best when you already understand the basics of how Hermes Agent handles conversations and tool calls. Run through the Beginner path first if you're new.
+
+### "I want to use it as a Python library"​
+
+Integrate Hermes Agent into your own Python applications programmatically.
+
+- Installation
+
+- Quickstart
+
+- Python Library Guide
+
+- Architecture
+
+- Tools
+
+- Sessions
+
+## Key Features at a Glance​
+
+Not sure what's available? Here's a quick directory of major features:
+FeatureWhat It DoesLinkToolsBuilt-in tools the agent can call (file I/O, search, shell, etc.)ToolsSkillsInstallable plugin packages that add new capabilitiesSkillsMemoryPersistent memory across sessionsMemoryContext FilesFeed files and directories into conversationsContext FilesMCPConnect to external tool servers via Model Context ProtocolMCPCronSchedule recurring agent tasksCronDelegationSpawn sub-agents 
+
+
+============================================================
+PAGE: user-guide/cli
+============================================================
+- 
+- User Guide
+- CLI InterfaceOn this page
+# CLI Interface
+
+Hermes Agent's CLI is a full terminal user interface (TUI) — not a web UI. It features multiline editing, slash-command autocomplete, conversation history, interrupt-and-redirect, and streaming tool output. Built for people who live in the terminal.
+
+## Running the CLI​
+
+```
+# Start an interactive session (default)hermes# Single query mode (non-interactive)hermes chat -q "Hello"# With a specific modelhermes chat --model "anthropic/claude-sonnet-4"# With a specific providerhermes chat --provider nous        # Use Nous Portalhermes chat --provider openrouter  # Force OpenRouter# With specific toolsetshermes chat --toolsets "web,terminal,skills"# Start with one or more skills preloadedhermes -s hermes-agent-dev,github-authhermes chat -s github-pr-workflow -q "open a draft PR"# Resume previous sessionshermes --continue             # Resume the most recent CLI session (-c)hermes --resume <session_id>  # Resume a specific session by ID (-r)# Verbose mode (debug output)hermes chat --verbose# Isolated git worktree (for running multiple agents in parallel)hermes -w                         # Interactive mode in worktreehermes -w -q "Fix issue #123"     # Single query in worktree
+```
+
+## Interface Layout​
+
+The Hermes CLI banner, conversation stream, and fixed input prompt rendered as a stable docs figure instead of fragile text art.
+The welcome banner shows your model, terminal backend, working directory, available tools, and installed skills at a glance.
+
+### Status Bar​
+
+A persistent status bar sits above the input area, updating in real time:
+
+```
+ ⚕ claude-sonnet-4-20250514 │ 12.4K/200K │ [██████░░░░] 6% │ $0.06 │ 15m
+```
+
+ElementDescriptionModel nameCurrent model (truncated if longer than 26 chars)Token countContext tokens used / max context windowContext barVisual fill indicator with color-coded thresholdsCostEstimated session cost (or `n/a` for unknown/zero-priced models)DurationElapsed session time
+The bar adapts to terminal width — full layout at ≥ 76 columns, compact at 52–75, minimal (model + duration only) below 52.
+Context color coding:
+ColorThresholdMeaningGreen< 50%Plenty of roomYellow50–80%Getting fullOrange80–95%Approaching limitRed≥ 95%Near overflow — consider `/compress`
+Use `/usage` for a detailed breakdown including per-category costs (input vs output tokens).
+
+### Session Resume Display​
+
+When resuming a previous session (`hermes -c` or `hermes --resume <id>`), a "Previous Conversation" panel appears between the banner and the input prompt, showing a compact recap of the conversation history. See Sessions — Conversation Recap on Resume for details and configuration.
+
+## Keybindings​
+
+KeyAction`Enter`Send message`Alt+Enter` or `Ctrl+J`New line (multi-line input)`Alt+V`Paste an image from the clipboard when supported by the terminal`Ctrl+V`Paste text and opportunistically attach clipboard images`Ctrl+B`Start/stop voice recording when voice mode is enabled (`voice.record_key`, default: `ctrl+b`)`Ctrl+C`Interrupt agent (double-press within 2s to force exit)`Ctrl+D`Exit`Tab`Accept auto-suggestion (ghost text) or autocomplete slash commands
+
+## Slash Commands​
+
+Type `/` to see the autocomplete dropdown. Hermes supports a large set of CLI slash commands, dynamic skill commands, and user-defined quick commands.
+Common examples:
+CommandDescription`/help`Show command help`/model`Show or change the current model`/tools`List currently available tools`/skills browse`Browse the skills hub and official optional skills`/background <prompt>`Run a prompt in a separate background session`/skin`Show or switch the active CLI skin`/voice on`Enable CLI voice mode (press `Ctrl+B` to record)`/voice tts`Toggle spoken playback for Hermes replies`/reasoning high`Increase reasoning effort`/title My Session`Name the current session
+For the full built-in CLI and messaging lists, see Slash Commands Reference.
+For setup, providers, silence tuning, and messaging/Discord voice usage, see Vo
+
+
+============================================================
+PAGE: user-guide/configuration
+============================================================
+- 
+- User Guide
+- ConfigurationOn this page
+# Configuration
+
+All settings are stored in the `~/.hermes/` directory for easy access.
+
+## 
+
+```
+~/.hermes/├── config.yaml     # Settings (model, terminal, TTS, compression, etc.)├── .env            # API keys and secrets├── auth.json       # OAuth provider credentials (Nous Portal, etc.)├── SOUL.md         # Primary agent identity (slot #1 in system prompt)├── memories/       # Persistent memory (MEMORY.md, USER.md)├── skills/         # Agent-created skills (managed via skill_manage tool)├── cron/           # Scheduled jobs├── sessions/       # Gateway sessions└── logs/           # Logs (errors.log, gateway.log — secrets auto-redacted)
+```
+
+## Managing Configuration​
+
+```
+hermes config              # View current configurationhermes config edit         # Open config.yaml in your editorhermes config set KEY VAL  # Set a specific valuehermes config check        # Check for missing options (after updates)hermes config migrate      # Interactively add missing options# Examples:hermes config set model anthropic/claude-opus-4hermes config set terminal.backend dockerhermes config set OPENROUTER_API_KEY sk-or-...  # Saves to .env
+```
+
+tipThe `hermes config set` command automatically routes values to the right file — API keys are saved to `.env`, everything else to `config.yaml`.
+
+## Configuration Precedence​
+
+Settings are resolved in this order (highest priority first):
+
+- CLI arguments — e.g., `hermes chat --model anthropic/claude-sonnet-4` (per-invocation override)
+
+- `~/.hermes/config.yaml` — the primary config file for all non-secret settings
+
+- `~/.hermes/.env` — fallback for env vars; required for secrets (API keys, tokens, passwords)
+
+- Built-in defaults — hardcoded safe defaults when nothing else is set
+
+Rule of ThumbSecrets (API keys, bot tokens, passwords) go in `.env`. Everything else (model, terminal backend, compression settings, memory limits, toolsets) goes in `config.yaml`. When both are set, `config.yaml` wins for non-secret settings.
+
+## Environment Variable Substitution​
+
+You can reference environment variables in `config.yaml` using `${VAR_NAME}` syntax:
+
+```
+auxiliary:  vision:    api_key: ${GOOGLE_API_KEY}    base_url: ${CUSTOM_VISION_URL}delegation:  api_key: ${DELEGATION_KEY}
+```
+
+Multiple references in a single value work: `url: "${HOST}:${PORT}"`. If a referenced variable is not set, the placeholder is kept verbatim (`${UNDEFINED_VAR}` stays as-is). Only the `${VAR}` syntax is supported — bare `$VAR` is not expanded.
+
+## Inference Providers​
+
+You need at least one way to connect to an LLM. Use `hermes model` to switch providers and models interactively, or configure directly:
+ProviderSetupNous Portal`hermes model` (OAuth, subscription-based)OpenAI Codex`hermes model` (ChatGPT OAuth, uses Codex models)GitHub Copilot`hermes model` (OAuth device code flow, `COPILOT_GITHUB_TOKEN`, `GH_TOKEN`, or `gh auth token`)GitHub Copilot ACP`hermes model` (spawns local `copilot --acp --stdio`)Anthropic`hermes model` (Claude Pro/Max via Claude Code auth, Anthropic API key, or manual setup-token)OpenRouter`OPENROUTER_API_KEY` in `~/.hermes/.env`AI Gateway`AI_GATEWAY_API_KEY` in `~/.hermes/.env` (provider: `ai-gateway`)z.ai / GLM`GLM_API_KEY` in `~/.hermes/.env` (provider: `zai`)Kimi / Moonshot`KIMI_API_KEY` in `~/.hermes/.env` (provider: `kimi-coding`)MiniMax`MINIMAX_API_KEY` in `~/.hermes/.env` (provider: `minimax`)MiniMax China`MINIMAX_CN_API_KEY` in `~/.hermes/.env` (provider: `minimax-cn`)Alibaba Cloud`DASHSCOPE_API_KEY` in `~/.hermes/.env` (provider: `alibaba`, aliases: `dashscope`, `qwen`)Kilo Code`KILOCODE_API_KEY` in `~/.hermes/.env` (provider: `kilocode`)OpenCode Zen`OPENCODE_ZEN_API_KEY` in `~/.hermes/.env` (provider: `opencode-zen`)OpenCode Go`OPENCODE_GO_API_KEY` in `~/.hermes/.env` (provider: `opencode-go`)Hugging Face`HF_TOKEN` in `~/.hermes/.env` (provider: `huggingface`, aliases: `hf`)Custom Endpoint`hermes model` (saved in `config.yaml`) or `OPENAI_BASE_URL` + `OPE
+
+
+============================================================
+PAGE: user-guide/sessions
+============================================================
+- 
+- User Guide
+- SessionsOn this page
+# Sessions
+
+Hermes Agent automatically saves every conversation as a session. Sessions enable conversation resume, cross-session search, and full conversation history management.
+
+## How Sessions Work​
+
+Every conversation — whether from the CLI, Telegram, Discord, WhatsApp, or Slack — is stored as a session with full message history. Sessions are tracked in two complementary systems:
+
+- SQLite database (`~/.hermes/state.db`) — structured session metadata with FTS5 full-text search
+
+- JSONL transcripts (`~/.hermes/sessions/`) — raw conversation transcripts including tool calls (gateway)
+
+The SQLite database stores:
+
+- Session ID, source platform, user ID
+
+- Session title (unique, human-readable name)
+
+- Model name and configuration
+
+- System prompt snapshot
+
+- Full message history (role, content, tool calls, tool results)
+
+- Token counts (input/output)
+
+- Timestamps (started_at, ended_at)
+
+- Parent session ID (for compression-triggered session splitting)
+
+### Session Sources​
+
+Each session is tagged with its source platform:
+SourceDescription`cli`Interactive CLI (`hermes` or `hermes chat`)`telegram`Telegram messenger`discord`Discord server/DM`whatsapp`WhatsApp messenger`slack`Slack workspace
+
+## CLI Session Resume​
+
+Resume previous conversations from the CLI using `--continue` or `--resume`:
+
+### Continue Last Session​
+
+```
+# Resume the most recent CLI sessionhermes --continuehermes -c# Or with the chat subcommandhermes chat --continuehermes chat -c
+```
+
+This looks up the most recent `cli` session from the SQLite database and loads its full conversation history.
+
+### Resume by Name​
+
+If you've given a session a title (see Session Naming below), you can resume it by name:
+
+```
+# Resume a named sessionhermes -c "my project"# If there are lineage variants (my project, my project #2, my project #3),# this automatically resumes the most recent onehermes -c "my project"   # → resumes "my project #3"
+```
+
+### Resume Specific Session​
+
+```
+# Resume a specific session by IDhermes --resume 20250305_091523_a1b2c3d4hermes -r 20250305_091523_a1b2c3d4# Resume by titlehermes --resume "refactoring auth"# Or with the chat subcommandhermes chat --resume 20250305_091523_a1b2c3d4
+```
+
+Session IDs are shown when you exit a CLI session, and can be found with `hermes sessions list`.
+
+### Conversation Recap on Resume​
+
+When you resume a session, Hermes displays a compact recap of the previous conversation in a styled panel before the input prompt:
+
+Resume mode shows a compact recap panel with recent user and assistant turns before returning you to the live prompt.
+The recap:
+
+- Shows user messages (gold `●`) and assistant responses (green `◆`)
+
+- Truncates long messages (300 chars for user, 200 chars / 3 lines for assistant)
+
+- Collapses tool calls to a count with tool names (e.g., `[3 tool calls: terminal, web_search]`)
+
+- Hides system messages, tool results, and internal reasoning
+
+- Caps at the last 10 exchanges with a "... N earlier messages ..." indicator
+
+- Uses dim styling to distinguish from the active conversation
+
+To disable the recap and keep the minimal one-liner behavior, set in `~/.hermes/config.yaml`:
+
+```
+display:  resume_display: minimal   # default: full
+```
+
+tipSession IDs follow the format `YYYYMMDD_HHMMSS_<8-char-hex>`, e.g. `20250305_091523_a1b2c3d4`. You can resume by ID or by title — both work with `-c` and `-r`.
+
+## Session Naming​
+
+Give sessions human-readable titles so you can find and resume them easily.
+
+### Auto-Generated Titles​
+
+Hermes automatically generates a short descriptive title (3–7 words) for each session after the first exchange. This runs in a background thread using a fast auxiliary model, so it adds no latency. You'll see auto-generated titles when browsing sessions with `hermes sessions list` or `hermes sessions browse`.
+Auto-titling only fires once per session and is skipped if you've already set a title manually.
+
+### Setting a Title Manually​
+
+Use the `/title` slash
+
+
+============================================================
+PAGE: user-guide/security
+============================================================
+- 
+- User Guide
+- SecurityOn this page
+# Security
+
+Hermes Agent is designed with a defense-in-depth security model. This page covers every security boundary — from command approval to container isolation to user authorization on messaging platforms.
+
+## Overview​
+
+The security model has five layers:
+
+- User authorization — who can talk to the agent (allowlists, DM pairing)
+
+- Dangerous command approval — human-in-the-loop for destructive operations
+
+- Container isolation — Docker/Singularity/Modal sandboxing with hardened settings
+
+- MCP credential filtering — environment variable isolation for MCP subprocesses
+
+- Context file scanning — prompt injection detection in project files
+
+## Dangerous Command Approval​
+
+Before executing any command, Hermes checks it against a curated list of dangerous patterns. If a match is found, the user must explicitly approve it.
+
+### What Triggers Approval​
+
+The following patterns trigger approval prompts (defined in `tools/approval.py`):
+PatternDescription`rm -r` / `rm --recursive`Recursive delete`rm ... /`Delete in root path`chmod 777`World-writable permissions`mkfs`Format filesystem`dd if=`Disk copy`DROP TABLE/DATABASE`SQL DROP`DELETE FROM` (without WHERE)SQL DELETE without WHERE`TRUNCATE TABLE`SQL TRUNCATE`> /etc/`Overwrite system config`systemctl stop/disable/mask`Stop/disable system services`kill -9 -1`Kill all processes`curl ... | sh`Pipe remote content to shell`bash -c`, `python -e`Shell/script execution via flags`find -exec rm`, `find -delete`Find with destructive actionsFork bomb patternsFork bombs`pkill`/`killall` hermes/gatewaySelf-termination prevention`gateway run` with `&`/`disown`/`nohup`Prevents starting gateway outside service manager
+infoContainer bypass: When running in `docker`, `singularity`, `modal`, or `daytona` backends, dangerous command checks are skipped because the container itself is the security boundary. Destructive commands inside a container can't harm the host.
+
+### Approval Flow (CLI)​
+
+In the interactive CLI, dangerous commands show an inline approval prompt:
+
+```
+  ⚠️  DANGEROUS COMMAND: recursive delete      rm -rf /tmp/old-project      [o]nce  |  [s]ession  |  [a]lways  |  [d]eny      Choice [o/s/a/D]:
+```
+
+The four options:
+
+- once — allow this single execution
+
+- session — allow this pattern for the rest of the session
+
+- always — add to permanent allowlist (saved to `config.yaml`)
+
+- deny (default) — block the command
+
+### Approval Flow (Gateway/Messaging)​
+
+On messaging platforms, the agent sends the dangerous command details to the chat and waits for the user to reply:
+
+- Reply yes, y, approve, ok, or go to approve
+
+- Reply no, n, deny, or cancel to deny
+
+The `HERMES_EXEC_ASK=1` environment variable is automatically set when running the gateway.
+
+### Permanent Allowlist​
+
+Commands approved with "always" are saved to `~/.hermes/config.yaml`:
+
+```
+# Permanently allowed dangerous command patternscommand_allowlist:  - rm  - systemctl
+```
+
+These patterns are loaded at startup and silently approved in all future sessions.
+tipUse `hermes config edit` to review or remove patterns from your permanent allowlist.
+
+## User Authorization (Gateway)​
+
+When running the messaging gateway, Hermes controls who can interact with the bot through a layered authorization system.
+
+### Authorization Check Order​
+
+The `_is_user_authorized()` method checks in this order:
+
+- Per-platform allow-all flag (e.g., `DISCORD_ALLOW_ALL_USERS=true`)
+
+- DM pairing approved list (users approved via pairing codes)
+
+- Platform-specific allowlists (e.g., `TELEGRAM_ALLOWED_USERS=12345,67890`)
+
+- Global allowlist (`GATEWAY_ALLOWED_USERS=12345,67890`)
+
+- Global allow-all (`GATEWAY_ALLOW_ALL_USERS=true`)
+
+- Default: deny
+
+### Platform Allowlists​
+
+Set allowed user IDs as comma-separated values in `~/.hermes/.env`:
+
+```
+# Platform-specific allowlistsTELEGRAM_ALLOWED_USERS=123456789,987654321DISCORD_ALLOWED_USERS=111222333444555666WHATSAPP_ALLOWED_USERS=15551234567SLACK_ALLOWED_USERS=U01ABC123# Cr
+
+
+============================================================
+PAGE: user-guide/features/memory
+============================================================
+- 
+- User Guide
+- Core Features
+- Persistent MemoryOn this page
+# Persistent Memory
+
+Hermes Agent has bounded, curated memory that persists across sessions. This lets it remember your preferences, your projects, your environment, and things it has learned.
+
+## How It Works​
+
+Two files make up the agent's memory:
+FilePurposeChar LimitMEMORY.mdAgent's personal notes — environment facts, conventions, things learned2,200 chars (~800 tokens)USER.mdUser profile — your preferences, communication style, expectations1,375 chars (~500 tokens)
+Both are stored in `~/.hermes/memories/` and are injected into the system prompt as a frozen snapshot at session start. The agent manages its own memory via the `memory` tool — it can add, replace, or remove entries.
+infoCharacter limits keep memory focused. When memory is full, the agent consolidates or replaces entries to make room for new information.
+
+## How Memory Appears in the System Prompt​
+
+At the start of every session, memory entries are loaded from disk and rendered into the system prompt as a frozen block:
+
+```
+══════════════════════════════════════════════MEMORY (your personal notes) [67% — 1,474/2,200 chars]══════════════════════════════════════════════User's project is a Rust web service at ~/code/myapi using Axum + SQLx§This machine runs Ubuntu 22.04, has Docker and Podman installed§User prefers concise responses, dislikes verbose explanations
+```
+
+The format includes:
+
+- A header showing which store (MEMORY or USER PROFILE)
+
+- Usage percentage and character counts so the agent knows capacity
+
+- Individual entries separated by `§` (section sign) delimiters
+
+- Entries can be multiline
+
+Frozen snapshot pattern: The system prompt injection is captured once at session start and never changes mid-session. This is intentional — it preserves the LLM's prefix cache for performance. When the agent adds/removes memory entries during a session, the changes are persisted to disk immediately but won't appear in the system prompt until the next session starts. Tool responses always show the live state.
+
+## Memory Tool Actions​
+
+The agent uses the `memory` tool with these actions:
+
+- add — Add a new memory entry
+
+- replace — Replace an existing entry with updated content (uses substring matching via `old_text`)
+
+- remove — Remove an entry that's no longer relevant (uses substring matching via `old_text`)
+
+There is no `read` action — memory content is automatically injected into the system prompt at session start. The agent sees its memories as part of its conversation context.
+
+### Substring Matching​
+
+The `replace` and `remove` actions use short unique substring matching — you don't need the full entry text. The `old_text` parameter just needs to be a unique substring that identifies exactly one entry:
+
+```
+# If memory contains "User prefers dark mode in all editors"memory(action="replace", target="memory",       old_text="dark mode",       content="User prefers light mode in VS Code, dark mode in terminal")
+```
+
+If the substring matches multiple entries, an error is returned asking for a more specific match.
+
+## Two Targets Explained​
+
+### memory — Agent's Personal Notes​
+
+For information the agent needs to remember about the environment, workflows, and lessons learned:
+
+- Environment facts (OS, tools, project structure)
+
+- Project conventions and configuration
+
+- Tool quirks and workarounds discovered
+
+- Completed task diary entries
+
+- Skills and techniques that worked
+
+### user — User Profile​
+
+For information about the user's identity, preferences, and communication style:
+
+- Name, role, timezone
+
+- Communication preferences (concise vs detailed, format preferences)
+
+- Pet peeves and things to avoid
+
+- Workflow habits
+
+- Technical skill level
+
+## What to Save vs Skip​
+
+### Save These (Proactively)​
+
+The agent saves automatically — you don't need to ask. It saves when it learns:
+
+- User preferences: "I prefer TypeScript over JavaScript" → save to `user`
+
+- Environment facts: "This server runs
+
+
+============================================================
+PAGE: user-guide/features/skills
+============================================================
+- 
+- User Guide
+- Core Features
+- Skills SystemOn this page
+# Skills System
+
+Skills are on-demand knowledge documents the agent can load when needed. They follow a progressive disclosure pattern to minimize token usage and are compatible with the agentskills.io open standard.
+All skills live in `~/.hermes/skills/` — the primary directory and source of truth. On fresh install, bundled skills are copied from the repo. Hub-installed and agent-created skills also go here. The agent can modify or delete any skill.
+You can also point Hermes at external skill directories — additional folders scanned alongside the local one. See External Skill Directories below.
+See also:
+
+- Bundled Skills Catalog
+
+- Official Optional Skills Catalog
+
+## Using Skills​
+
+Every installed skill is automatically available as a slash command:
+
+```
+# In the CLI or any messaging platform:/gif-search funny cats/axolotl help me fine-tune Llama 3 on my dataset/github-pr-workflow create a PR for the auth refactor/plan design a rollout for migrating our auth provider# Just the skill name loads it and lets the agent ask what you need:/excalidraw
+```
+
+The bundled `plan` skill is a good example of a skill-backed slash command with custom behavior. Running `/plan [request]` tells Hermes to inspect context if needed, write a markdown implementation plan instead of executing the task, and save the result under `.hermes/plans/` relative to the active workspace/backend working directory.
+You can also interact with skills through natural conversation:
+
+```
+hermes chat --toolsets skills -q "What skills do you have?"hermes chat --toolsets skills -q "Show me the axolotl skill"
+```
+
+## Progressive Disclosure​
+
+Skills use a token-efficient loading pattern:
+
+```
+Level 0: skills_list()           → [{name, description, category}, ...]   (~3k tokens)Level 1: skill_view(name)        → Full content + metadata       (varies)Level 2: skill_view(name, path)  → Specific reference file       (varies)
+```
+
+The agent only loads the full skill content when it actually needs it.
+
+## SKILL.md Format​
+
+```
+---name: my-skilldescription: Brief description of what this skill doesversion: 1.0.0platforms: [macos, linux]     # Optional — restrict to specific OS platformsmetadata:  hermes:    tags: [python, automation]    category: devops    fallback_for_toolsets: [web]    # Optional — conditional activation (see below)    requires_toolsets: [terminal]   # Optional — conditional activation (see below)---# Skill Title## When to UseTrigger conditions for this skill.## Procedure1. Step one2. Step two## Pitfalls- Known failure modes and fixes## VerificationHow to confirm it worked.
+```
+
+### Platform-Specific Skills​
+
+Skills can restrict themselves to specific operating systems using the `platforms` field:
+ValueMatches`macos`macOS (Darwin)`linux`Linux`windows`Windows
+
+```
+platforms: [macos]            # macOS only (e.g., iMessage, Apple Reminders, FindMy)platforms: [macos, linux]     # macOS and Linux
+```
+
+When set, the skill is automatically hidden from the system prompt, `skills_list()`, and slash commands on incompatible platforms. If omitted, the skill loads on all platforms.
+
+### Conditional Activation (Fallback Skills)​
+
+Skills can automatically show or hide themselves based on which tools are available in the current session. This is most useful for fallback skills — free or local alternatives that should only appear when a premium tool is unavailable.
+
+```
+metadata:  hermes:    fallback_for_toolsets: [web]      # Show ONLY when these toolsets are unavailable    requires_toolsets: [terminal]     # Show ONLY when these toolsets are available    fallback_for_tools: [web_search]  # Show ONLY when these specific tools are unavailable    requires_tools: [terminal]        # Show ONLY when these specific tools are available
+```
+
+FieldBehavior`fallback_for_toolsets`Skill is hidden when the listed toolsets are available. Shown when they're missing.`fallback_for_tools`Same, but checks individual tools instead 
+
+
+============================================================
+PAGE: user-guide/features/context-files
+============================================================
+- 
+- User Guide
+- Core Features
+- Context FilesOn this page
+# Context Files
+
+Hermes Agent automatically discovers and loads context files that shape how it behaves. Some are project-local and discovered from your working directory. `SOUL.md` is now global to the Hermes instance and is loaded from `HERMES_HOME` only.
+
+## Supported Context Files​
+
+FilePurposeDiscovery.hermes.md / HERMES.mdProject instructions (highest priority)Walks to git rootAGENTS.mdProject instructions, conventions, architectureRecursive (walks subdirectories)CLAUDE.mdClaude Code context files (also detected)CWD onlySOUL.mdGlobal personality and tone customization for this Hermes instance`HERMES_HOME/SOUL.md` only.cursorrulesCursor IDE coding conventionsCWD only.cursor/rules/*.mdcCursor IDE rule modulesCWD only
+Priority systemOnly one project context type is loaded per session (first match wins): `.hermes.md` → `AGENTS.md` → `CLAUDE.md` → `.cursorrules`. SOUL.md is always loaded independently as the agent identity (slot #1).
+
+## AGENTS.md​
+
+`AGENTS.md` is the primary project context file. It tells the agent how your project is structured, what conventions to follow, and any special instructions.
+
+### Hierarchical Discovery​
+
+Hermes walks the directory tree starting from the working directory and loads all `AGENTS.md` files found, sorted by depth. This supports monorepo-style setups:
+
+```
+my-project/├── AGENTS.md              ← Top-level project context├── frontend/│   └── AGENTS.md          ← Frontend-specific instructions├── backend/│   └── AGENTS.md          ← Backend-specific instructions└── shared/    └── AGENTS.md          ← Shared library conventions
+```
+
+All four files are concatenated into a single context block with relative path headers.
+infoDirectories that are skipped during the walk: `.`-prefixed dirs, `node_modules`, `__pycache__`, `venv`, `.venv`.
+
+### Example AGENTS.md​
+
+```
+# Project ContextThis is a Next.js 14 web application with a Python FastAPI backend.## Architecture- Frontend: Next.js 14 with App Router in `/frontend`- Backend: FastAPI in `/backend`, uses SQLAlchemy ORM- Database: PostgreSQL 16- Deployment: Docker Compose on a Hetzner VPS## Conventions- Use TypeScript strict mode for all frontend code- Python code follows PEP 8, use type hints everywhere- All API endpoints return JSON with `{data, error, meta}` shape- Tests go in `__tests__/` directories (frontend) or `tests/` (backend)## Important Notes- Never modify migration files directly — use Alembic commands- The `.env.local` file has real API keys, don't commit it- Frontend port is 3000, backend is 8000, DB is 5432
+```
+
+## SOUL.md​
+
+`SOUL.md` controls the agent's personality, tone, and communication style. See the Personality page for full details.
+Location:
+
+- `~/.hermes/SOUL.md`
+
+- or `$HERMES_HOME/SOUL.md` if you run Hermes with a custom home directory
+
+Important details:
+
+- Hermes seeds a default `SOUL.md` automatically if one does not exist yet
+
+- Hermes loads `SOUL.md` only from `HERMES_HOME`
+
+- Hermes does not probe the working directory for `SOUL.md`
+
+- If the file is empty, nothing from `SOUL.md` is added to the prompt
+
+- If the file has content, the content is injected verbatim after scanning and truncation
+
+## .cursorrules​
+
+Hermes is compatible with Cursor IDE's `.cursorrules` file and `.cursor/rules/*.mdc` rule modules. If these files exist in your project root and no higher-priority context file (`.hermes.md`, `AGENTS.md`, or `CLAUDE.md`) is found, they're loaded as the project context.
+This means your existing Cursor conventions automatically apply when using Hermes.
+
+## How Context Files Are Loaded​
+
+Context files are loaded by `build_context_files_prompt()` in `agent/prompt_builder.py`:
+
+- At session start — the function scans the working directory
+
+- Content is read — each file is read as UTF-8 text
+
+- Security scan — content is checked for prompt injection patterns
+
+- Truncation — files exceeding 20,000 characters are head/tail truncated (70% head, 20% tail, 
+
+
+============================================================
+PAGE: user-guide/features/personality
+============================================================
+- 
+- User Guide
+- Core Features
+- Personality & SOUL.mdOn this page
+# Personality & SOUL.md
+
+Hermes Agent's personality is fully customizable. `SOUL.md` is the primary identity — it's the first thing in the system prompt and defines who the agent is.
+
+- `SOUL.md` — a durable persona file that lives in `HERMES_HOME` and serves as the agent's identity (slot #1 in the system prompt)
+
+- built-in or custom `/personality` presets — session-level system-prompt overlays
+
+If you want to change who Hermes is — or replace it with an entirely different agent persona — edit `SOUL.md`.
+
+## How SOUL.md works now​
+
+Hermes now seeds a default `SOUL.md` automatically in:
+
+```
+~/.hermes/SOUL.md
+```
+
+More precisely, it uses the current instance's `HERMES_HOME`, so if you run Hermes with a custom home directory, it will use:
+
+```
+$HERMES_HOME/SOUL.md
+```
+
+### Important behavior​
+
+- SOUL.md is the agent's primary identity. It occupies slot #1 in the system prompt, replacing the hardcoded default identity.
+
+- Hermes creates a starter `SOUL.md` automatically if one does not exist yet
+
+- Existing user `SOUL.md` files are never overwritten
+
+- Hermes loads `SOUL.md` only from `HERMES_HOME`
+
+- Hermes does not look in the current working directory for `SOUL.md`
+
+- If `SOUL.md` exists but is empty, or cannot be loaded, Hermes falls back to a built-in default identity
+
+- If `SOUL.md` has content, that content is injected verbatim after security scanning and truncation
+
+- SOUL.md is not duplicated in the context files section — it appears only once, as the identity
+
+That makes `SOUL.md` a true per-user or per-instance identity, not just an additive layer.
+
+## Why this design​
+
+This keeps personality predictable.
+If Hermes loaded `SOUL.md` from whatever directory you happened to launch it in, your personality could change unexpectedly between projects. By loading only from `HERMES_HOME`, the personality belongs to the Hermes instance itself.
+That also makes it easier to teach users:
+
+- "Edit `~/.hermes/SOUL.md` to change Hermes' default personality."
+
+## Where to edit it​
+
+For most users:
+
+```
+~/.hermes/SOUL.md
+```
+
+If you use a custom home:
+
+```
+$HERMES_HOME/SOUL.md
+```
+
+## What should go in SOUL.md?​
+
+Use it for durable voice and personality guidance, such as:
+
+- tone
+
+- communication style
+
+- level of directness
+
+- default interaction style
+
+- what to avoid stylistically
+
+- how Hermes should handle uncertainty, disagreement, or ambiguity
+
+Use it less for:
+
+- one-off project instructions
+
+- file paths
+
+- repo conventions
+
+- temporary workflow details
+
+Those belong in `AGENTS.md`, not `SOUL.md`.
+
+## Good SOUL.md content​
+
+A good SOUL file is:
+
+- stable across contexts
+
+- broad enough to apply in many conversations
+
+- specific enough to materially shape the voice
+
+- focused on communication and identity, not task-specific instructions
+
+### Example​
+
+```
+# PersonalityYou are a pragmatic senior engineer with strong taste.You optimize for truth, clarity, and usefulness over politeness theater.## Style- Be direct without being cold- Prefer substance over filler- Push back when something is a bad idea- Admit uncertainty plainly- Keep explanations compact unless depth is useful## What to avoid- Sycophancy- Hype language- Repeating the user's framing if it's wrong- Overexplaining obvious things## Technical posture- Prefer simple systems over clever systems- Care about operational reality, not idealized architecture- Treat edge cases as part of the design, not cleanup
+```
+
+## What Hermes injects into the prompt​
+
+`SOUL.md` content goes directly into slot #1 of the system prompt — the agent identity position. No wrapper language is added around it.
+The content goes through:
+
+- prompt-injection scanning
+
+- truncation if it is too large
+
+If the file is empty, whitespace-only, or cannot be read, Hermes falls back to a built-in default identity ("You are Hermes Agent, an intelligent AI assistant created by Nous Research..."). This fallback also applies when `skip_context_
+
+
+============================================================
+PAGE: user-guide/features/tools
+============================================================
+- 
+- User Guide
+- Core Features
+- Tools & ToolsetsOn this page
+# Tools & Toolsets
+
+Tools are functions that extend the agent's capabilities. They're organized into logical toolsets that can be enabled or disabled per platform.
+
+## Available Tools​
+
+Hermes ships with a broad built-in tool registry covering web search, browser automation, terminal execution, file editing, memory, delegation, RL training, messaging delivery, Home Assistant, Honcho memory, and more.
+High-level categories:
+CategoryExamplesDescriptionWeb`web_search`, `web_extract`Search the web and extract page content.Terminal & Files`terminal`, `process`, `read_file`, `patch`Execute commands and manipulate files.Browser`browser_navigate`, `browser_snapshot`, `browser_vision`Interactive browser automation with text and vision support.Media`vision_analyze`, `image_generate`, `text_to_speech`Multimodal analysis and generation.Agent orchestration`todo`, `clarify`, `execute_code`, `delegate_task`Planning, clarification, code execution, and subagent delegation.Memory & recall`memory`, `session_search`, `honcho_*`Persistent memory, session search, and Honcho cross-session context.Automation & delivery`cronjob`, `send_message`Scheduled tasks with create/list/update/pause/resume/run/remove actions, plus outbound messaging delivery.Integrations`ha_*`, MCP server tools, `rl_*`Home Assistant, MCP, RL training, and other integrations.
+For the authoritative code-derived registry, see Built-in Tools Reference and Toolsets Reference.
+
+## Using Toolsets​
+
+```
+# Use specific toolsetshermes chat --toolsets "web,terminal"# See all available toolshermes tools# Configure tools per platform (interactive)hermes tools
+```
+
+Common toolsets include `web`, `terminal`, `file`, `browser`, `vision`, `image_gen`, `moa`, `skills`, `tts`, `todo`, `memory`, `session_search`, `cronjob`, `code_execution`, `delegation`, `clarify`, `honcho`, `homeassistant`, and `rl`.
+See Toolsets Reference for the full set, including platform presets such as `hermes-cli`, `hermes-telegram`, and dynamic MCP toolsets like `mcp-<server>`.
+
+## Terminal Backends​
+
+The terminal tool can execute commands in different environments:
+BackendDescriptionUse Case`local`Run on your machine (default)Development, trusted tasks`docker`Isolated containersSecurity, reproducibility`ssh`Remote serverSandboxing, keep agent away from its own code`singularity`HPC containersCluster computing, rootless`modal`Cloud executionServerless, scale`daytona`Cloud sandbox workspacePersistent remote dev environments
+
+### Configuration​
+
+```
+# In ~/.hermes/config.yamlterminal:  backend: local    # or: docker, ssh, singularity, modal, daytona  cwd: "."          # Working directory  timeout: 180      # Command timeout in seconds
+```
+
+### Docker Backend​
+
+```
+terminal:  backend: docker  docker_image: python:3.11-slim
+```
+
+### SSH Backend​
+
+Recommended for security — agent can't modify its own code:
+
+```
+terminal:  backend: ssh
+```
+
+```
+# Set credentials in ~/.hermes/.envTERMINAL_SSH_HOST=my-server.example.comTERMINAL_SSH_USER=myuserTERMINAL_SSH_KEY=~/.ssh/id_rsa
+```
+
+### Singularity/Apptainer​
+
+```
+# Pre-build SIF for parallel workersapptainer build ~/python.sif docker://python:3.11-slim# Configurehermes config set terminal.backend singularityhermes config set terminal.singularity_image ~/python.sif
+```
+
+### Modal (Serverless Cloud)​
+
+```
+uv pip install modalmodal setuphermes config set terminal.backend modal
+```
+
+### Container Resources​
+
+Configure CPU, memory, disk, and persistence for all container backends:
+
+```
+terminal:  backend: docker  # or singularity, modal, daytona  container_cpu: 1              # CPU cores (default: 1)  container_memory: 5120        # Memory in MB (default: 5GB)  container_disk: 51200         # Disk in MB (default: 50GB)  container_persistent: true    # Persist filesystem across sessions (default: true)
+```
+
+When `container_persistent: true`, installed packages, files, and config survive across sessions.
+
+### Container Security​
+
+
+
+============================================================
+PAGE: user-guide/features/mcp
+============================================================
+- 
+- User Guide
+- Integrations
+- MCP (Model Context Protocol)On this page
+# MCP (Model Context Protocol)
+
+MCP lets Hermes Agent connect to external tool servers so the agent can use tools that live outside Hermes itself — GitHub, databases, file systems, browser stacks, internal APIs, and more.
+If you have ever wanted Hermes to use a tool that already exists somewhere else, MCP is usually the cleanest way to do it.
+
+## What MCP gives you​
+
+- Access to external tool ecosystems without writing a native Hermes tool first
+
+- Local stdio servers and remote HTTP MCP servers in the same config
+
+- Automatic tool discovery and registration at startup
+
+- Utility wrappers for MCP resources and prompts when supported by the server
+
+- Per-server filtering so you can expose only the MCP tools you actually want Hermes to see
+
+## Quick start​
+
+- Install MCP support (already included if you used the standard install script):
+
+```
+cd ~/.hermes/hermes-agentuv pip install -e ".[mcp]"
+```
+
+- Add an MCP server to `~/.hermes/config.yaml`:
+
+```
+mcp_servers:  filesystem:    command: "npx"    args: ["-y", "@modelcontextprotocol/server-filesystem", "/home/user/projects"]
+```
+
+- Start Hermes:
+
+```
+hermes chat
+```
+
+- Ask Hermes to use the MCP-backed capability.
+
+For example:
+
+```
+List the files in /home/user/projects and summarize the repo structure.
+```
+
+Hermes will discover the MCP server's tools and use them like any other tool.
+
+## Two kinds of MCP servers​
+
+### Stdio servers​
+
+Stdio servers run as local subprocesses and talk over stdin/stdout.
+
+```
+mcp_servers:  github:    command: "npx"    args: ["-y", "@modelcontextprotocol/server-github"]    env:      GITHUB_PERSONAL_ACCESS_TOKEN: "***"
+```
+
+Use stdio servers when:
+
+- the server is installed locally
+
+- you want low-latency access to local resources
+
+- you are following MCP server docs that show `command`, `args`, and `env`
+
+### HTTP servers​
+
+HTTP MCP servers are remote endpoints Hermes connects to directly.
+
+```
+mcp_servers:  remote_api:    url: "https://mcp.example.com/mcp"    headers:      Authorization: "Bearer ***"
+```
+
+Use HTTP servers when:
+
+- the MCP server is hosted elsewhere
+
+- your organization exposes internal MCP endpoints
+
+- you do not want Hermes spawning a local subprocess for that integration
+
+## Basic configuration reference​
+
+Hermes reads MCP config from `~/.hermes/config.yaml` under `mcp_servers`.
+
+### Common keys​
+
+KeyTypeMeaning`command`stringExecutable for a stdio MCP server`args`listArguments for the stdio server`env`mappingEnvironment variables passed to the stdio server`url`stringHTTP MCP endpoint`headers`mappingHTTP headers for remote servers`timeout`numberTool call timeout`connect_timeout`numberInitial connection timeout`enabled`boolIf `false`, Hermes skips the server entirely`tools`mappingPer-server tool filtering and utility policy
+
+### Minimal stdio example​
+
+```
+mcp_servers:  filesystem:    command: "npx"    args: ["-y", "@modelcontextprotocol/server-filesystem", "/tmp"]
+```
+
+### Minimal HTTP example​
+
+```
+mcp_servers:  company_api:    url: "https://mcp.internal.example.com"    headers:      Authorization: "Bearer ***"
+```
+
+## How Hermes registers MCP tools​
+
+Hermes prefixes MCP tools so they do not collide with built-in names:
+
+```
+mcp_<server_name>_<tool_name>
+```
+
+Examples:
+ServerMCP toolRegistered name`filesystem``read_file``mcp_filesystem_read_file``github``create-issue``mcp_github_create_issue``my-api``query.data``mcp_my_api_query_data`
+In practice, you usually do not need to call the prefixed name manually — Hermes sees the tool and chooses it during normal reasoning.
+
+## MCP utility tools​
+
+When supported, Hermes also registers utility tools around MCP resources and prompts:
+
+- `list_resources`
+
+- `read_resource`
+
+- `list_prompts`
+
+- `get_prompt`
+
+These are registered per server with the same prefix pattern, for example:
+
+- `mcp_github_list_resources`
+
+- `mcp_github_get_prompt`
+
+### Important​
+
+These utility tools are now capability-aware:
+
+- Hermes only reg
+
+
+============================================================
+PAGE: user-guide/messaging/
+============================================================
+- 
+- User Guide
+- Messaging Gateway
+- Messaging GatewayOn this page
+# Messaging Gateway
+
+Chat with Hermes from Telegram, Discord, Slack, WhatsApp, Signal, SMS, Email, Home Assistant, Mattermost, Matrix, DingTalk, Feishu/Lark, WeCom, or your browser. The gateway is a single background process that connects to all your configured platforms, handles sessions, runs cron jobs, and delivers voice messages.
+For the full voice feature set — including CLI microphone mode, spoken replies in messaging, and Discord voice-channel conversations — see Voice Mode and Use Voice Mode with Hermes.
+
+## Architecture​
+
+Each platform adapter receives messages, routes them through a per-chat session store, and dispatches them to the AIAgent for processing. The gateway also runs the cron scheduler, ticking every 60 seconds to execute any due jobs.
+
+## Quick Setup​
+
+The easiest way to configure messaging platforms is the interactive wizard:
+
+```
+hermes gateway setup        # Interactive setup for all messaging platforms
+```
+
+This walks you through configuring each platform with arrow-key selection, shows which platforms are already configured, and offers to start/restart the gateway when done.
+
+## Gateway Commands​
+
+```
+hermes gateway              # Run in foregroundhermes gateway setup        # Configure messaging platforms interactivelyhermes gateway install      # Install as a user service (Linux) / launchd service (macOS)sudo hermes gateway install --system   # Linux only: install a boot-time system servicehermes gateway start        # Start the default servicehermes gateway stop         # Stop the default servicehermes gateway status       # Check default service statushermes gateway status --system         # Linux only: inspect the system service explicitly
+```
+
+## Chat Commands (Inside Messaging)​
+
+CommandDescription`/new` or `/reset`Start a fresh conversation`/model [provider:model]`Show or change the model (supports `provider:model` syntax)`/provider`Show available providers with auth status`/personality [name]`Set a personality`/retry`Retry the last message`/undo`Remove the last exchange`/status`Show session info`/stop`Stop the running agent`/approve`Approve a pending dangerous command`/deny`Reject a pending dangerous command`/sethome`Set this chat as the home channel`/compress`Manually compress conversation context`/title [name]`Set or show the session title`/resume [name]`Resume a previously named session`/usage`Show token usage for this session`/insights [days]`Show usage insights and analytics`/reasoning [level|show|hide]`Change reasoning effort or toggle reasoning display`/voice [on|off|tts|join|leave|status]`Control messaging voice replies and Discord voice-channel behavior`/rollback [number]`List or restore filesystem checkpoints`/background <prompt>`Run a prompt in a separate background session`/reload-mcp`Reload MCP servers from config`/update`Update Hermes Agent to the latest version`/help`Show available commands`/<skill-name>`Invoke any installed skill
+
+## Session Management​
+
+### Session Persistence​
+
+Sessions persist across messages until they reset. The agent remembers your conversation context.
+
+### Reset Policies​
+
+Sessions reset based on configurable policies:
+PolicyDefaultDescriptionDaily4:00 AMReset at a specific hour each dayIdle1440 minReset after N minutes of inactivityBoth(combined)Whichever triggers first
+Configure per-platform overrides in `~/.hermes/gateway.json`:
+
+```
+{  "reset_by_platform": {    "telegram": { "mode": "idle", "idle_minutes": 240 },    "discord": { "mode": "idle", "idle_minutes": 60 }  }}
+```
+
+## Security​
+
+By default, the gateway denies all users who are not in an allowlist or paired via DM. This is the safe default for a bot with terminal access.
+
+```
+# Restrict to specific users (recommended):TELEGRAM_ALLOWED_USERS=123456789,987654321DISCORD_ALLOWED_USERS=123456789012345678SIGNAL_ALLOWED_USERS=+155****4567,+155****6543SMS_ALLOWED_USERS=+155****4567,+155****6543EMAIL_ALLOWED_USERS=trusted@example.c
+
+
+============================================================
+PAGE: user-guide/messaging/telegram
+============================================================
+- 
+- User Guide
+- Messaging Gateway
+- TelegramOn this page
+# Telegram Setup
+
+Hermes Agent integrates with Telegram as a full-featured conversational bot. Once connected, you can chat with your agent from any device, send voice memos that get auto-transcribed, receive scheduled task results, and use the agent in group chats. The integration is built on python-telegram-bot and supports text, voice, images, and file attachments.
+
+## Step 1: Create a Bot via BotFather​
+
+Every Telegram bot requires an API token issued by @BotFather, Telegram's official bot management tool.
+
+- Open Telegram and search for @BotFather, or visit t.me/BotFather
+
+- Send `/newbot`
+
+- Choose a display name (e.g., "Hermes Agent") — this can be anything
+
+- Choose a username — this must be unique and end in `bot` (e.g., `my_hermes_bot`)
+
+- BotFather replies with your API token. It looks like this:
+
+```
+123456789:ABCdefGHIjklMNOpqrSTUvwxYZ
+```
+
+warningKeep your bot token secret. Anyone with this token can control your bot. If it leaks, revoke it immediately via `/revoke` in BotFather.
+
+## Step 2: Customize Your Bot (Optional)​
+
+These BotFather commands improve the user experience. Message @BotFather and use:
+CommandPurpose`/setdescription`The "What can this bot do?" text shown before a user starts chatting`/setabouttext`Short text on the bot's profile page`/setuserpic`Upload an avatar for your bot`/setcommands`Define the command menu (the `/` button in chat)`/setprivacy`Control whether the bot sees all group messages (see Step 3)
+tipFor `/setcommands`, a useful starting set:
+```
+help - Show help informationnew - Start a new conversationsethome - Set this chat as the home channel
+```
+
+## Step 3: Privacy Mode (Critical for Groups)​
+
+Telegram bots have a privacy mode that is enabled by default. This is the single most common source of confusion when using bots in groups.
+With privacy mode ON, your bot can only see:
+
+- Messages that start with a `/` command
+
+- Replies directly to the bot's own messages
+
+- Service messages (member joins/leaves, pinned messages, etc.)
+
+- Messages in channels where the bot is an admin
+
+With privacy mode OFF, the bot receives every message in the group.
+
+### How to disable privacy mode​
+
+- Message @BotFather
+
+- Send `/mybots`
+
+- Select your bot
+
+- Go to Bot Settings → Group Privacy → Turn off
+
+warningYou must remove and re-add the bot to any group after changing the privacy setting. Telegram caches the privacy state when a bot joins a group, and it will not update until the bot is removed and re-added.
+tipAn alternative to disabling privacy mode: promote the bot to group admin. Admin bots always receive all messages regardless of the privacy setting, and this avoids needing to toggle the global privacy mode.
+
+## Step 4: Find Your User ID​
+
+Hermes Agent uses numeric Telegram user IDs to control access. Your user ID is not your username — it's a number like `123456789`.
+Method 1 (recommended): Message @userinfobot — it instantly replies with your user ID.
+Method 2: Message @get_id_bot — another reliable option.
+Save this number; you'll need it for the next step.
+
+## Step 5: Configure Hermes​
+
+### Option A: Interactive Setup (Recommended)​
+
+```
+hermes gateway setup
+```
+
+Select Telegram when prompted. The wizard asks for your bot token and allowed user IDs, then writes the configuration for you.
+
+### Option B: Manual Configuration​
+
+Add the following to `~/.hermes/.env`:
+
+```
+TELEGRAM_BOT_TOKEN=123456789:ABCdefGHIjklMNOpqrSTUvwxYZTELEGRAM_ALLOWED_USERS=123456789    # Comma-separated for multiple users
+```
+
+### Start the Gateway​
+
+```
+hermes gateway
+```
+
+The bot should come online within seconds. Send it a message on Telegram to verify.
+
+## Home Channel​
+
+Use the `/sethome` command in any Telegram chat (DM or group) to designate it as the home channel. Scheduled tasks (cron jobs) deliver their results to this channel.
+You can also set it manually in `~/.hermes/.env`:
+
+```
+TELEGRAM_HOME_CHANNEL=-1001234567890TELEGRAM_HOME_CHANNEL_NAME="My N
+
+
+============================================================
+PAGE: user-guide/messaging/discord
+============================================================
+- 
+- User Guide
+- Messaging Gateway
+- DiscordOn this page
+# Discord Setup
+
+Hermes Agent integrates with Discord as a bot, letting you chat with your AI assistant through direct messages or server channels. The bot receives your messages, processes them through the Hermes Agent pipeline (including tool use, memory, and reasoning), and responds in real time. It supports text, voice messages, file attachments, and slash commands.
+Before setup, here's the part most people want to know: how Hermes behaves once it's in your server.
+
+## How Hermes Behaves​
+
+ContextBehaviorDMsHermes responds to every message. No `@mention` needed. Each DM has its own session.Server channelsBy default, Hermes only responds when you `@mention` it. If you post in a channel without mentioning it, Hermes ignores the message.Free-response channelsYou can make specific channels mention-free with `DISCORD_FREE_RESPONSE_CHANNELS`, or disable mentions globally with `DISCORD_REQUIRE_MENTION=false`.ThreadsHermes replies in the same thread. Mention rules still apply unless that thread or its parent channel is configured as free-response. Threads stay isolated from the parent channel for session history.Shared channels with multiple usersBy default, Hermes isolates session history per user inside the channel for safety and clarity. Two people talking in the same channel do not share one transcript unless you explicitly disable that.
+tipIf you want a normal bot-help channel where people can talk to Hermes without tagging it every time, add that channel to `DISCORD_FREE_RESPONSE_CHANNELS`.
+
+### Discord Gateway Model​
+
+Hermes on Discord is not a webhook that replies statelessly. It runs through the full messaging gateway, which means each incoming message goes through:
+
+- authorization (`DISCORD_ALLOWED_USERS`)
+
+- mention / free-response checks
+
+- session lookup
+
+- session transcript loading
+
+- normal Hermes agent execution, including tools, memory, and slash commands
+
+- response delivery back to Discord
+
+That matters because behavior in a busy server depends on both Discord routing and Hermes session policy.
+
+### Session Model in Discord​
+
+By default:
+
+- each DM gets its own session
+
+- each server thread gets its own session namespace
+
+- each user in a shared channel gets their own session inside that channel
+
+So if Alice and Bob both talk to Hermes in `#research`, Hermes treats those as separate conversations by default even though they are using the same visible Discord channel.
+This is controlled by `config.yaml`:
+
+```
+group_sessions_per_user: true
+```
+
+Set it to `false` only if you explicitly want one shared conversation for the entire room:
+
+```
+group_sessions_per_user: false
+```
+
+Shared sessions can be useful for a collaborative room, but they also mean:
+
+- users share context growth and token costs
+
+- one person's long tool-heavy task can bloat everyone else's context
+
+- one person's in-flight run can interrupt another person's follow-up in the same room
+
+### Interrupts and Concurrency​
+
+Hermes tracks running agents by session key.
+With the default `group_sessions_per_user: true`:
+
+- Alice interrupting her own in-flight request only affects Alice's session in that channel
+
+- Bob can keep talking in the same channel without inheriting Alice's history or interrupting Alice's run
+
+With `group_sessions_per_user: false`:
+
+- the whole room shares one running-agent slot for that channel/thread
+
+- follow-up messages from different people can interrupt or queue behind each other
+
+This guide walks you through the full setup process — from creating your bot on Discord's Developer Portal to sending your first message.
+
+## Step 1: Create a Discord Application​
+
+- Go to the Discord Developer Portal and sign in with your Discord account.
+
+- Click New Application in the top-right corner.
+
+- Enter a name for your application (e.g., "Hermes Agent") and accept the Developer Terms of Service.
+
+- Click Create.
+
+You'll land on the General Information page. Note the Application ID —
+
+
+============================================================
+PAGE: user-guide/messaging/slack
+============================================================
+- 
+- User Guide
+- Messaging Gateway
+- SlackOn this page
+# Slack Setup
+
+Connect Hermes Agent to Slack as a bot using Socket Mode. Socket Mode uses WebSockets instead of
+public HTTP endpoints, so your Hermes instance doesn't need to be publicly accessible — it works
+behind firewalls, on your laptop, or on a private server.
+Classic Slack Apps DeprecatedClassic Slack apps (using RTM API) were fully deprecated in March 2025. Hermes uses the modern
+Bolt SDK with Socket Mode. If you have an old classic app, you must create a new one following
+the steps below.
+
+## Overview​
+
+ComponentValueLibrary`slack-bolt` / `slack_sdk` for Python (Socket Mode)ConnectionWebSocket — no public URL requiredAuth tokens neededBot Token (`xoxb-`) + App-Level Token (`xapp-`)User identificationSlack Member IDs (e.g., `U01ABC2DEF3`)
+
+## Step 1: Create a Slack App​
+
+- Go to https://api.slack.com/apps
+
+- Click Create New App
+
+- Choose From scratch
+
+- Enter an app name (e.g., "Hermes Agent") and select your workspace
+
+- Click Create App
+
+You'll land on the app's Basic Information page.
+
+## Step 2: Configure Bot Token Scopes​
+
+Navigate to Features → OAuth & Permissions in the sidebar. Scroll to Scopes → Bot Token Scopes and add the following:
+ScopePurpose`chat:write`Send messages as the bot`app_mentions:read`Detect when @mentioned in channels`channels:history`Read messages in public channels the bot is in`channels:read`List and get info about public channels`groups:history`Read messages in private channels the bot is invited to`im:history`Read direct message history`im:read`View basic DM info`im:write`Open and manage DMs`users:read`Look up user information`files:write`Upload files (images, audio, documents)
+Missing scopes = missing featuresWithout `channels:history` and `groups:history`, the bot will not receive messages in channels —
+it will only work in DMs. These are the most commonly missed scopes.
+Optional scopes:
+ScopePurpose`groups:read`List and get info about private channels
+
+## Step 3: Enable Socket Mode​
+
+Socket Mode lets the bot connect via WebSocket instead of requiring a public URL.
+
+- In the sidebar, go to Settings → Socket Mode
+
+- Toggle Enable Socket Mode to ON
+
+- You'll be prompted to create an App-Level Token:
+
+- Name it something like `hermes-socket` (the name doesn't matter)
+
+- Add the `connections:write` scope
+
+- Click Generate
+
+- Copy the token — it starts with `xapp-`. This is your `SLACK_APP_TOKEN`
+
+tipYou can always find or regenerate app-level tokens under Settings → Basic Information → App-Level Tokens.
+
+## Step 4: Subscribe to Events​
+
+This step is critical — it controls what messages the bot can see.
+
+- In the sidebar, go to Features → Event Subscriptions
+
+- Toggle Enable Events to ON
+
+- Expand Subscribe to bot events and add:
+
+EventRequired?Purpose`message.im`YesBot receives direct messages`message.channels`YesBot receives messages in public channels it's added to`message.groups`RecommendedBot receives messages in private channels it's invited to`app_mention`YesPrevents Bolt SDK errors when bot is @mentioned
+
+- Click Save Changes at the bottom of the page
+
+Missing event subscriptions is the #1 setup issueIf the bot works in DMs but not in channels, you almost certainly forgot to add
+`message.channels` (for public channels) and/or `message.groups` (for private channels).
+Without these events, Slack simply never delivers channel messages to the bot.
+
+## Step 5: Enable the Messages Tab​
+
+This step enables direct messages to the bot. Without it, users see "Sending messages to this app has been turned off" when trying to DM the bot.
+
+- In the sidebar, go to Features → App Home
+
+- Scroll to Show Tabs
+
+- Toggle Messages Tab to ON
+
+- Check "Allow users to send Slash commands and messages from the messages tab"
+
+Without this step, DMs are completely blockedEven with all the correct scopes and event subscriptions, Slack will not allow users to send direct messages to the bot unless the Messages Tab is enabled. This is a Slack platform requir
+
+
+============================================================
+PAGE: user-guide/messaging/whatsapp
+============================================================
+- 
+- User Guide
+- Messaging Gateway
+- WhatsAppOn this page
+# WhatsApp Setup
+
+Hermes connects to WhatsApp through a built-in bridge based on Baileys. This works by emulating a WhatsApp Web session — not through the official WhatsApp Business API. No Meta developer account or Business verification is required.
+Unofficial API — Ban RiskWhatsApp does not officially support third-party bots outside the Business API. Using a third-party bridge carries a small risk of account restrictions. To minimize risk:
+
+- Use a dedicated phone number for the bot (not your personal number)
+
+- Don't send bulk/spam messages — keep usage conversational
+
+- Don't automate outbound messaging to people who haven't messaged first
+
+WhatsApp Web Protocol UpdatesWhatsApp periodically updates their Web protocol, which can temporarily break compatibility
+with third-party bridges. When this happens, Hermes will update the bridge dependency. If the
+bot stops working after a WhatsApp update, pull the latest Hermes version and re-pair.
+
+## Two Modes​
+
+ModeHow it worksBest forSeparate bot number (recommended)Dedicate a phone number to the bot. People message that number directly.Clean UX, multiple users, lower ban riskPersonal self-chatUse your own WhatsApp. You message yourself to talk to the agent.Quick setup, single user, testing
+
+## Prerequisites​
+
+- Node.js v18+ and npm — the WhatsApp bridge runs as a Node.js process
+
+- A phone with WhatsApp installed (for scanning the QR code)
+
+Unlike older browser-driven bridges, the current Baileys-based bridge does not require a local Chromium or Puppeteer dependency stack.
+
+## Step 1: Run the Setup Wizard​
+
+```
+hermes whatsapp
+```
+
+The wizard will:
+
+- Ask which mode you want (bot or self-chat)
+
+- Install bridge dependencies if needed
+
+- Display a QR code in your terminal
+
+- Wait for you to scan it
+
+To scan the QR code:
+
+- Open WhatsApp on your phone
+
+- Go to Settings → Linked Devices
+
+- Tap Link a Device
+
+- Point your camera at the terminal QR code
+
+Once paired, the wizard confirms the connection and exits. Your session is saved automatically.
+tipIf the QR code looks garbled, make sure your terminal is at least 60 columns wide and supports
+Unicode. You can also try a different terminal emulator.
+
+## Step 2: Getting a Second Phone Number (Bot Mode)​
+
+For bot mode, you need a phone number that isn't already registered with WhatsApp. Three options:
+OptionCostNotesGoogle VoiceFreeUS only. Get a number at voice.google.com. Verify WhatsApp via SMS through the Google Voice app.Prepaid SIM$5–15 one-timeAny carrier. Activate, verify WhatsApp, then the SIM can sit in a drawer. Number must stay active (make a call every 90 days).VoIP servicesFree–$5/monthTextNow, TextFree, or similar. Some VoIP numbers are blocked by WhatsApp — try a few if the first doesn't work.
+After getting the number:
+
+- Install WhatsApp on a phone (or use WhatsApp Business app with dual-SIM)
+
+- Register the new number with WhatsApp
+
+- Run `hermes whatsapp` and scan the QR code from that WhatsApp account
+
+## Step 3: Configure Hermes​
+
+Add the following to your `~/.hermes/.env` file:
+
+```
+# RequiredWHATSAPP_ENABLED=trueWHATSAPP_MODE=bot                          # "bot" or "self-chat"WHATSAPP_ALLOWED_USERS=15551234567         # Comma-separated phone numbers (with country code, no +)
+```
+
+Optional behavior settings in `~/.hermes/config.yaml`:
+
+```
+unauthorized_dm_behavior: pairwhatsapp:  unauthorized_dm_behavior: ignore
+```
+
+- `unauthorized_dm_behavior: pair` is the global default. Unknown DM senders get a pairing code.
+
+- `whatsapp.unauthorized_dm_behavior: ignore` makes WhatsApp stay silent for unauthorized DMs, which is usually the better choice for a private number.
+
+Then start the gateway:
+
+```
+hermes gateway              # Foregroundhermes gateway install      # Install as a user servicesudo hermes gateway install --system   # Linux only: boot-time system service
+```
+
+The gateway starts the WhatsApp bridge automatically using the saved session.
+
+## Session 
+
+
+============================================================
+PAGE: user-guide/features/cron
+============================================================
+- 
+- User Guide
+- Automation
+- Scheduled Tasks (Cron)On this page
+# Scheduled Tasks (Cron)
+
+Schedule tasks to run automatically with natural language or cron expressions. Hermes exposes cron management through a single `cronjob` tool with action-style operations instead of separate schedule/list/remove tools.
+
+## What cron can do now​
+
+Cron jobs can:
+
+- schedule one-shot or recurring tasks
+
+- pause, resume, edit, trigger, and remove jobs
+
+- attach zero, one, or multiple skills to a job
+
+- deliver results back to the origin chat, local files, or configured platform targets
+
+- run in fresh agent sessions with the normal static tool list
+
+warningCron-run sessions cannot recursively create more cron jobs. Hermes disables cron management tools inside cron executions to prevent runaway scheduling loops.
+
+## Creating scheduled tasks​
+
+### In chat with /cron​
+
+```
+/cron add 30m "Remind me to check the build"/cron add "every 2h" "Check server status"/cron add "every 1h" "Summarize new feed items" --skill blogwatcher/cron add "every 1h" "Use both skills and combine the result" --skill blogwatcher --skill find-nearby
+```
+
+### From the standalone CLI​
+
+```
+hermes cron create "every 2h" "Check server status"hermes cron create "every 1h" "Summarize new feed items" --skill blogwatcherhermes cron create "every 1h" "Use both skills and combine the result" \  --skill blogwatcher \  --skill find-nearby \  --name "Skill combo"
+```
+
+### Through natural conversation​
+
+Ask Hermes normally:
+
+```
+Every morning at 9am, check Hacker News for AI news and send me a summary on Telegram.
+```
+
+Hermes will use the unified `cronjob` tool internally.
+
+## Skill-backed cron jobs​
+
+A cron job can load one or more skills before it runs the prompt.
+
+### Single skill​
+
+```
+cronjob(    action="create",    skill="blogwatcher",    prompt="Check the configured feeds and summarize anything new.",    schedule="0 9 * * *",    name="Morning feeds",)
+```
+
+### Multiple skills​
+
+Skills are loaded in order. The prompt becomes the task instruction layered on top of those skills.
+
+```
+cronjob(    action="create",    skills=["blogwatcher", "find-nearby"],    prompt="Look for new local events and interesting nearby places, then combine them into one short brief.",    schedule="every 6h",    name="Local brief",)
+```
+
+This is useful when you want a scheduled agent to inherit reusable workflows without stuffing the full skill text into the cron prompt itself.
+
+## Editing jobs​
+
+You do not need to delete and recreate jobs just to change them.
+
+### Chat​
+
+```
+/cron edit <job_id> --schedule "every 4h"/cron edit <job_id> --prompt "Use the revised task"/cron edit <job_id> --skill blogwatcher --skill find-nearby/cron edit <job_id> --remove-skill blogwatcher/cron edit <job_id> --clear-skills
+```
+
+### Standalone CLI​
+
+```
+hermes cron edit <job_id> --schedule "every 4h"hermes cron edit <job_id> --prompt "Use the revised task"hermes cron edit <job_id> --skill blogwatcher --skill find-nearbyhermes cron edit <job_id> --add-skill find-nearbyhermes cron edit <job_id> --remove-skill blogwatcherhermes cron edit <job_id> --clear-skills
+```
+
+Notes:
+
+- repeated `--skill` replaces the job's attached skill list
+
+- `--add-skill` appends to the existing list without replacing it
+
+- `--remove-skill` removes specific attached skills
+
+- `--clear-skills` removes all attached skills
+
+## Lifecycle actions​
+
+Cron jobs now have a fuller lifecycle than just create/remove.
+
+### Chat​
+
+```
+/cron list/cron pause <job_id>/cron resume <job_id>/cron run <job_id>/cron remove <job_id>
+```
+
+### Standalone CLI​
+
+```
+hermes cron listhermes cron pause <job_id>hermes cron resume <job_id>hermes cron run <job_id>hermes cron remove <job_id>hermes cron statushermes cron tick
+```
+
+What they do:
+
+- `pause` — keep the job but stop scheduling it
+
+- `resume` — re-enable the job and compute the next future run
+
+- `run` — trigger the job on the next scheduler tick
+
+- `remove` — delete it entirely
+
+## How it works​
+
+Cron execution is handled
+
+
+============================================================
+PAGE: user-guide/features/hooks
+============================================================
+- 
+- User Guide
+- Automation
+- Event HooksOn this page
+# Event Hooks
+
+Hermes has two hook systems that run custom code at key lifecycle points:
+SystemRegistered viaRuns inUse caseGateway hooks`HOOK.yaml` + `handler.py` in `~/.hermes/hooks/`Gateway onlyLogging, alerts, webhooksPlugin hooks`ctx.register_hook()` in a pluginCLI + GatewayTool interception, metrics, guardrails
+Both systems are non-blocking — errors in any hook are caught and logged, never crashing the agent.
+
+## Gateway Event Hooks​
+
+Gateway hooks fire automatically during gateway operation (Telegram, Discord, Slack, WhatsApp) without blocking the main agent pipeline.
+
+### Creating a Hook​
+
+Each hook is a directory under `~/.hermes/hooks/` containing two files:
+
+```
+~/.hermes/hooks/└── my-hook/    ├── HOOK.yaml      # Declares which events to listen for    └── handler.py     # Python handler function
+```
+
+HOOK.yaml​
+
+```
+name: my-hookdescription: Log all agent activity to a fileevents:  - agent:start  - agent:end  - agent:step
+```
+
+The `events` list determines which events trigger your handler. You can subscribe to any combination of events, including wildcards like `command:*`.
+handler.py​
+
+```
+import jsonfrom datetime import datetimefrom pathlib import PathLOG_FILE = Path.home() / ".hermes" / "hooks" / "my-hook" / "activity.log"async def handle(event_type: str, context: dict):    """Called for each subscribed event. Must be named 'handle'."""    entry = {        "timestamp": datetime.now().isoformat(),        "event": event_type,        **context,    }    with open(LOG_FILE, "a") as f:        f.write(json.dumps(entry) + "\n")
+```
+
+Handler rules:
+
+- Must be named `handle`
+
+- Receives `event_type` (string) and `context` (dict)
+
+- Can be `async def` or regular `def` — both work
+
+- Errors are caught and logged, never crashing the agent
+
+### Available Events​
+
+EventWhen it firesContext keys`gateway:startup`Gateway process starts`platforms` (list of active platform names)`session:start`New messaging session created`platform`, `user_id`, `session_id`, `session_key``session:end`Session ended (before reset)`platform`, `user_id`, `session_key``session:reset`User ran `/new` or `/reset``platform`, `user_id`, `session_key``agent:start`Agent begins processing a message`platform`, `user_id`, `session_id`, `message``agent:step`Each iteration of the tool-calling loop`platform`, `user_id`, `session_id`, `iteration`, `tool_names``agent:end`Agent finishes processing`platform`, `user_id`, `session_id`, `message`, `response``command:*`Any slash command executed`platform`, `user_id`, `command`, `args`
+Wildcard Matching​
+Handlers registered for `command:*` fire for any `command:` event (`command:model`, `command:reset`, etc.). Monitor all slash commands with a single subscription.
+
+### Examples​
+
+Boot Checklist (BOOT.md) — Built-in​
+The gateway ships with a built-in `boot-md` hook that looks for `~/.hermes/BOOT.md` on every startup. If the file exists, the agent runs its instructions in a background session. No installation needed — just create the file.
+Create `~/.hermes/BOOT.md`:
+
+```
+# Startup Checklist1. Check if any cron jobs failed overnight — run `hermes cron list`2. Send a message to Discord #general saying "Gateway restarted, all systems go"3. Check if /opt/app/deploy.log has any errors from the last 24 hours
+```
+
+The agent runs these instructions in a background thread so it doesn't block gateway startup. If nothing needs attention, the agent replies with `[SILENT]` and no message is delivered.
+tipNo BOOT.md? The hook silently skips — zero overhead. Create the file whenever you need startup automation, delete it when you don't.
+Telegram Alert on Long Tasks​
+Send yourself a message when the agent takes more than 10 steps:
+
+```
+# ~/.hermes/hooks/long-task-alert/HOOK.yamlname: long-task-alertdescription: Alert when agent is taking many stepsevents:  - agent:step
+```
+
+```
+# ~/.hermes/hooks/long-task-alert/handler.pyimport osimport httpxTHRESHOLD = 10BOT_TOKEN = os.getenv("TELEGRAM_
+
+
+============================================================
+PAGE: user-guide/features/delegation
+============================================================
+- 
+- User Guide
+- Automation
+- Subagent DelegationOn this page
+# Subagent Delegation
+
+The `delegate_task` tool spawns child AIAgent instances with isolated context, restricted toolsets, and their own terminal sessions. Each child gets a fresh conversation and works independently — only its final summary enters the parent's context.
+
+## Single Task​
+
+```
+delegate_task(    goal="Debug why tests fail",    context="Error: assertion in test_foo.py line 42",    toolsets=["terminal", "file"])
+```
+
+## Parallel Batch​
+
+Up to 3 concurrent subagents:
+
+```
+delegate_task(tasks=[    {"goal": "Research topic A", "toolsets": ["web"]},    {"goal": "Research topic B", "toolsets": ["web"]},    {"goal": "Fix the build", "toolsets": ["terminal", "file"]}])
+```
+
+## How Subagent Context Works​
+
+Critical: Subagents Know NothingSubagents start with a completely fresh conversation. They have zero knowledge of the parent's conversation history, prior tool calls, or anything discussed before delegation. The subagent's only context comes from the `goal` and `context` fields you provide.
+This means you must pass everything the subagent needs:
+
+```
+# BAD - subagent has no idea what "the error" isdelegate_task(goal="Fix the error")# GOOD - subagent has all context it needsdelegate_task(    goal="Fix the TypeError in api/handlers.py",    context="""The file api/handlers.py has a TypeError on line 47:    'NoneType' object has no attribute 'get'.    The function process_request() receives a dict from parse_body(),    but parse_body() returns None when Content-Type is missing.    The project is at /home/user/myproject and uses Python 3.11.""")
+```
+
+The subagent receives a focused system prompt built from your goal and context, instructing it to complete the task and provide a structured summary of what it did, what it found, any files modified, and any issues encountered.
+
+## Practical Examples​
+
+### Parallel Research​
+
+Research multiple topics simultaneously and collect summaries:
+
+```
+delegate_task(tasks=[    {        "goal": "Research the current state of WebAssembly in 2025",        "context": "Focus on: browser support, non-browser runtimes, language support",        "toolsets": ["web"]    },    {        "goal": "Research the current state of RISC-V adoption in 2025",        "context": "Focus on: server chips, embedded systems, software ecosystem",        "toolsets": ["web"]    },    {        "goal": "Research quantum computing progress in 2025",        "context": "Focus on: error correction breakthroughs, practical applications, key players",        "toolsets": ["web"]    }])
+```
+
+### Code Review + Fix​
+
+Delegate a review-and-fix workflow to a fresh context:
+
+```
+delegate_task(    goal="Review the authentication module for security issues and fix any found",    context="""Project at /home/user/webapp.    Auth module files: src/auth/login.py, src/auth/jwt.py, src/auth/middleware.py.    The project uses Flask, PyJWT, and bcrypt.    Focus on: SQL injection, JWT validation, password handling, session management.    Fix any issues found and run the test suite (pytest tests/auth/).""",    toolsets=["terminal", "file"])
+```
+
+### Multi-File Refactoring​
+
+Delegate a large refactoring task that would flood the parent's context:
+
+```
+delegate_task(    goal="Refactor all Python files in src/ to replace print() with proper logging",    context="""Project at /home/user/myproject.    Use the 'logging' module with logger = logging.getLogger(__name__).    Replace print() calls with appropriate log levels:    - print(f"Error: ...") -> logger.error(...)    - print(f"Warning: ...") -> logger.warning(...)    - print(f"Debug: ...") -> logger.debug(...)    - Other prints -> logger.info(...)    Don't change print() in test files or CLI output.    Run pytest after to verify nothing broke.""",    toolsets=["terminal", "file"])
+```
+
+## Batch Mode Details​
+
+When you provide a `tasks` array, subagents run in parallel using a thread pool:
+
+- Maximum concurrency: 3 tasks (the `tasks` ar
+
+
+============================================================
+PAGE: user-guide/features/browser
+============================================================
+- 
+- User Guide
+- Web & Media
+- BrowserOn this page
+# Browser Automation
+
+Hermes Agent includes a full browser automation toolset with multiple backend options:
+
+- Browserbase cloud mode via Browserbase for managed cloud browsers and anti-bot tooling
+
+- Browser Use cloud mode via Browser Use as an alternative cloud browser provider
+
+- Local Chrome via CDP — connect browser tools to your own Chrome instance using `/browser connect`
+
+- Local browser mode via the `agent-browser` CLI and a local Chromium installation
+
+In all modes, the agent can navigate websites, interact with page elements, fill forms, and extract information.
+
+## Overview​
+
+Pages are represented as accessibility trees (text-based snapshots), making them ideal for LLM agents. Interactive elements get ref IDs (like `@e1`, `@e2`) that the agent uses for clicking and typing.
+Key capabilities:
+
+- Multi-provider cloud execution — Browserbase or Browser Use, no local browser needed
+
+- Local Chrome integration — attach to your running Chrome via CDP for hands-on browsing
+
+- Built-in stealth — random fingerprints, CAPTCHA solving, residential proxies (Browserbase)
+
+- Session isolation — each task gets its own browser session
+
+- Automatic cleanup — inactive sessions are closed after a timeout
+
+- Vision analysis — screenshot + AI analysis for visual understanding
+
+## Setup​
+
+### Browserbase cloud mode​
+
+To use Browserbase-managed cloud browsers, add:
+
+```
+# Add to ~/.hermes/.envBROWSERBASE_API_KEY=***BROWSERBASE_PROJECT_ID=your-project-id-here
+```
+
+Get your credentials at browserbase.com.
+
+### Browser Use cloud mode​
+
+To use Browser Use as your cloud browser provider, add:
+
+```
+# Add to ~/.hermes/.envBROWSER_USE_API_KEY=***
+```
+
+Get your API key at browser-use.com. Browser Use provides a cloud browser via its REST API. If both Browserbase and Browser Use credentials are set, Browserbase takes priority.
+
+### Local Chrome via CDP (/browser connect)​
+
+Instead of a cloud provider, you can attach Hermes browser tools to your own running Chrome instance via the Chrome DevTools Protocol (CDP). This is useful when you want to see what the agent is doing in real-time, interact with pages that require your own cookies/sessions, or avoid cloud browser costs.
+In the CLI, use:
+
+```
+/browser connect              # Connect to Chrome at ws://localhost:9222/browser connect ws://host:port  # Connect to a specific CDP endpoint/browser status               # Check current connection/browser disconnect            # Detach and return to cloud/local mode
+```
+
+If Chrome isn't already running with remote debugging, Hermes will attempt to auto-launch it with `--remote-debugging-port=9222`.
+tipTo start Chrome manually with CDP enabled:
+```
+# Linuxgoogle-chrome --remote-debugging-port=9222# macOS"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --remote-debugging-port=9222
+```
+
+When connected via CDP, all browser tools (`browser_navigate`, `browser_click`, etc.) operate on your live Chrome instance instead of spinning up a cloud session.
+
+### Local browser mode​
+
+If you do not set any cloud credentials and don't use `/browser connect`, Hermes can still use the browser tools through a local Chromium install driven by `agent-browser`.
+
+### Optional Environment Variables​
+
+```
+# Residential proxies for better CAPTCHA solving (default: "true")BROWSERBASE_PROXIES=true# Advanced stealth with custom Chromium — requires Scale Plan (default: "false")BROWSERBASE_ADVANCED_STEALTH=false# Session reconnection after disconnects — requires paid plan (default: "true")BROWSERBASE_KEEP_ALIVE=true# Custom session timeout in milliseconds (default: project default)# Examples: 600000 (10min), 1800000 (30min)BROWSERBASE_SESSION_TIMEOUT=600000# Inactivity timeout before auto-cleanup in seconds (default: 300)BROWSER_INACTIVITY_TIMEOUT=300
+```
+
+### Install agent-browser CLI​
+
+```
+npm install -g agent-browser# Or install locally in the repo:npm install
+```
+
+infoThe `browser` toolset must be included in your confi
+
+
+============================================================
+PAGE: user-guide/features/code-execution
+============================================================
+- 
+- User Guide
+- Automation
+- Code ExecutionOn this page
+# Code Execution (Programmatic Tool Calling)
+
+The `execute_code` tool lets the agent write Python scripts that call Hermes tools programmatically, collapsing multi-step workflows into a single LLM turn. The script runs in a sandboxed child process on the agent host, communicating via Unix domain socket RPC.
+
+## How It Works​
+
+- The agent writes a Python script using `from hermes_tools import ...`
+
+- Hermes generates a `hermes_tools.py` stub module with RPC functions
+
+- Hermes opens a Unix domain socket and starts an RPC listener thread
+
+- The script runs in a child process — tool calls travel over the socket back to Hermes
+
+- Only the script's `print()` output is returned to the LLM; intermediate tool results never enter the context window
+
+```
+# The agent can write scripts like:from hermes_tools import web_search, web_extractresults = web_search("Python 3.13 features", limit=5)for r in results["data"]["web"]:    content = web_extract([r["url"]])    # ... filter and process ...print(summary)
+```
+
+Available tools in sandbox: `web_search`, `web_extract`, `read_file`, `write_file`, `search_files`, `patch`, `terminal` (foreground only).
+
+## When the Agent Uses This​
+
+The agent uses `execute_code` when there are:
+
+- 3+ tool calls with processing logic between them
+
+- Bulk data filtering or conditional branching
+
+- Loops over results
+
+The key benefit: intermediate tool results never enter the context window — only the final `print()` output comes back, dramatically reducing token usage.
+
+## Practical Examples​
+
+### Data Processing Pipeline​
+
+```
+from hermes_tools import search_files, read_fileimport json# Find all config files and extract database settingsmatches = search_files("database", path=".", file_glob="*.yaml", limit=20)configs = []for match in matches.get("matches", []):    content = read_file(match["path"])    configs.append({"file": match["path"], "preview": content["content"][:200]})print(json.dumps(configs, indent=2))
+```
+
+### Multi-Step Web Research​
+
+```
+from hermes_tools import web_search, web_extractimport json# Search, extract, and summarize in one turnresults = web_search("Rust async runtime comparison 2025", limit=5)summaries = []for r in results["data"]["web"]:    page = web_extract([r["url"]])    for p in page.get("results", []):        if p.get("content"):            summaries.append({                "title": r["title"],                "url": r["url"],                "excerpt": p["content"][:500]            })print(json.dumps(summaries, indent=2))
+```
+
+### Bulk File Refactoring​
+
+```
+from hermes_tools import search_files, read_file, patch# Find all Python files using deprecated API and fix themmatches = search_files("old_api_call", path="src/", file_glob="*.py")fixed = 0for match in matches.get("matches", []):    result = patch(        path=match["path"],        old_string="old_api_call(",        new_string="new_api_call(",        replace_all=True    )    if "error" not in str(result):        fixed += 1print(f"Fixed {fixed} files out of {len(matches.get('matches', []))} matches")
+```
+
+### Build and Test Pipeline​
+
+```
+from hermes_tools import terminal, read_fileimport json# Run tests, parse results, and reportresult = terminal("cd /project && python -m pytest --tb=short -q 2>&1", timeout=120)output = result.get("output", "")# Parse test outputpassed = output.count(" passed")failed = output.count(" failed")errors = output.count(" error")report = {    "passed": passed,    "failed": failed,    "errors": errors,    "exit_code": result.get("exit_code", -1),    "summary": output[-500:] if len(output) > 500 else output}print(json.dumps(report, indent=2))
+```
+
+## Resource Limits​
+
+ResourceLimitNotesTimeout5 minutes (300s)Script is killed with SIGTERM, then SIGKILL after 5s graceStdout50 KBOutput truncated with `[output truncated at 50KB]` noticeStderr10 KBIncluded in output on non-zero exit for debuggingTool calls50 per executionError returned when limit reache
+
+
+============================================================
+PAGE: user-guide/features/vision
+============================================================
+- 
+- User Guide
+- Web & Media
+- Vision & Image PasteOn this page
+# Vision & Image Paste
+
+Hermes Agent supports multimodal vision — you can paste images from your clipboard directly into the CLI and ask the agent to analyze, describe, or work with them. Images are sent to the model as base64-encoded content blocks, so any vision-capable model can process them.
+
+## How It Works​
+
+- Copy an image to your clipboard (screenshot, browser image, etc.)
+
+- Attach it using one of the methods below
+
+- Type your question and press Enter
+
+- The image appears as a `[📎 Image #1]` badge above the input
+
+- On submit, the image is sent to the model as a vision content block
+
+You can attach multiple images before sending — each gets its own badge. Press `Ctrl+C` to clear all attached images.
+Images are saved to `~/.hermes/images/` as PNG files with timestamped filenames.
+
+## Paste Methods​
+
+How you attach an image depends on your terminal environment. Not all methods work everywhere — here's the full breakdown:
+
+### /paste Command​
+
+The most reliable method. Works everywhere.
+
+```
+/paste
+```
+
+Type `/paste` and press Enter. Hermes checks your clipboard for an image and attaches it. This works in every environment because it explicitly calls the clipboard backend — no terminal keybinding interception to worry about.
+
+### Ctrl+V / Cmd+V (Bracketed Paste)​
+
+When you paste text that's on the clipboard alongside an image, Hermes automatically checks for an image too. This works when:
+
+- Your clipboard contains both text and an image (some apps put both on the clipboard when you copy)
+
+- Your terminal supports bracketed paste (most modern terminals do)
+
+warningIf your clipboard has only an image (no text), Ctrl+V does nothing in most terminals. Terminals can only paste text — there's no standard mechanism to paste binary image data. Use `/paste` or Alt+V instead.
+
+### Alt+V​
+
+Alt key combinations pass through most terminal emulators (they're sent as ESC + key rather than being intercepted). Press `Alt+V` to check the clipboard for an image.
+cautionDoes not work in VSCode's integrated terminal. VSCode intercepts many Alt+key combos for its own UI. Use `/paste` instead.
+
+### Ctrl+V (Raw — Linux Only)​
+
+On Linux desktop terminals (GNOME Terminal, Konsole, Alacritty, etc.), `Ctrl+V` is not the paste shortcut — `Ctrl+Shift+V` is. So `Ctrl+V` sends a raw byte to the application, and Hermes catches it to check the clipboard. This only works on Linux desktop terminals with X11 or Wayland clipboard access.
+
+## Platform Compatibility​
+
+Environment`/paste`Ctrl+V text+imageAlt+VNotesmacOS Terminal / iTerm2✅✅✅Best experience — `osascript` always availableLinux X11 desktop✅✅✅Requires `xclip` (`apt install xclip`)Linux Wayland desktop✅✅✅Requires `wl-paste` (`apt install wl-clipboard`)WSL2 (Windows Terminal)✅✅¹✅Uses `powershell.exe` — no extra install neededVSCode Terminal (local)✅✅¹❌VSCode intercepts Alt+keyVSCode Terminal (SSH)❌²❌²❌Remote clipboard not accessibleSSH terminal (any)❌²❌²❌²Remote clipboard not accessible
+¹ Only when clipboard has both text and an image (image-only clipboard = nothing happens)
+² See SSH & Remote Sessions below
+
+## Platform-Specific Setup​
+
+### macOS​
+
+No setup required. Hermes uses `osascript` (built into macOS) to read the clipboard. For faster performance, optionally install `pngpaste`:
+
+```
+brew install pngpaste
+```
+
+### Linux (X11)​
+
+Install `xclip`:
+
+```
+# Ubuntu/Debiansudo apt install xclip# Fedorasudo dnf install xclip# Archsudo pacman -S xclip
+```
+
+### Linux (Wayland)​
+
+Modern Linux desktops (Ubuntu 22.04+, Fedora 34+) often use Wayland by default. Install `wl-clipboard`:
+
+```
+# Ubuntu/Debiansudo apt install wl-clipboard# Fedorasudo dnf install wl-clipboard# Archsudo pacman -S wl-clipboard
+```
+
+How to check if you're on Wayland
+```
+echo $XDG_SESSION_TYPE# "wayland" = Wayland, "x11" = X11, "tty" = no display server
+```
+
+### WSL2​
+
+No extra setup required. Hermes detects WSL2 automatically (via `/proc/version`) and uses `powershell
+
+
+============================================================
+PAGE: user-guide/features/tts
+============================================================
+- 
+- User Guide
+- Web & Media
+- Voice & TTSOn this page
+# Voice & TTS
+
+Hermes Agent supports both text-to-speech output and voice message transcription across all messaging platforms.
+
+## Text-to-Speech​
+
+Convert text to speech with four providers:
+ProviderQualityCostAPI KeyEdge TTS (default)GoodFreeNone neededElevenLabsExcellentPaid`ELEVENLABS_API_KEY`OpenAI TTSGoodPaid`VOICE_TOOLS_OPENAI_KEY`NeuTTSGoodFreeNone needed
+
+### Platform Delivery​
+
+PlatformDeliveryFormatTelegramVoice bubble (plays inline)Opus `.ogg`DiscordVoice bubble (Opus/OGG), falls back to file attachmentOpus/MP3WhatsAppAudio file attachmentMP3CLISaved to `~/.hermes/audio_cache/`MP3
+
+### Configuration​
+
+```
+# In ~/.hermes/config.yamltts:  provider: "edge"              # "edge" | "elevenlabs" | "openai" | "neutts"  edge:    voice: "en-US-AriaNeural"   # 322 voices, 74 languages  elevenlabs:    voice_id: "pNInz6obpgDQGcFmaJgB"  # Adam    model_id: "eleven_multilingual_v2"  openai:    model: "gpt-4o-mini-tts"    voice: "alloy"              # alloy, echo, fable, onyx, nova, shimmer    base_url: "https://api.openai.com/v1"  # Override for OpenAI-compatible TTS endpoints  neutts:    ref_audio: ''    ref_text: ''    model: neuphonic/neutts-air-q4-gguf    device: cpu
+```
+
+### Telegram Voice Bubbles & ffmpeg​
+
+Telegram voice bubbles require Opus/OGG audio format:
+
+- OpenAI and ElevenLabs produce Opus natively — no extra setup
+
+- Edge TTS (default) outputs MP3 and needs ffmpeg to convert:
+
+- NeuTTS outputs WAV and also needs ffmpeg to convert for Telegram voice bubbles
+
+```
+# Ubuntu/Debiansudo apt install ffmpeg# macOSbrew install ffmpeg# Fedorasudo dnf install ffmpeg
+```
+
+Without ffmpeg, Edge TTS and NeuTTS audio are sent as regular audio files (playable, but shown as a rectangular player instead of a voice bubble).
+tipIf you want voice bubbles without installing ffmpeg, switch to the OpenAI or ElevenLabs provider.
+
+## Voice Message Transcription (STT)​
+
+Voice messages sent on Telegram, Discord, WhatsApp, Slack, or Signal are automatically transcribed and injected as text into the conversation. The agent sees the transcript as normal text.
+ProviderQualityCostAPI KeyLocal Whisper (default)GoodFreeNone neededGroq Whisper APIGood–BestFree tier`GROQ_API_KEY`OpenAI Whisper APIGood–BestPaid`VOICE_TOOLS_OPENAI_KEY` or `OPENAI_API_KEY`
+Zero ConfigLocal transcription works out of the box when `faster-whisper` is installed. If that's unavailable, Hermes can also use a local `whisper` CLI from common install locations (like `/opt/homebrew/bin`) or a custom command via `HERMES_LOCAL_STT_COMMAND`.
+
+### Configuration​
+
+```
+# In ~/.hermes/config.yamlstt:  provider: "local"           # "local" | "groq" | "openai"  local:    model: "base"             # tiny, base, small, medium, large-v3  openai:    model: "whisper-1"        # whisper-1, gpt-4o-mini-transcribe, gpt-4o-transcribe
+```
+
+### Provider Details​
+
+Local (faster-whisper) — Runs Whisper locally via faster-whisper. Uses CPU by default, GPU if available. Model sizes:
+ModelSizeSpeedQuality`tiny`~75 MBFastestBasic`base`~150 MBFastGood (default)`small`~500 MBMediumBetter`medium`~1.5 GBSlowerGreat`large-v3`~3 GBSlowestBest
+Groq API — Requires `GROQ_API_KEY`. Good cloud fallback when you want a free hosted STT option.
+OpenAI API — Accepts `VOICE_TOOLS_OPENAI_KEY` first and falls back to `OPENAI_API_KEY`. Supports `whisper-1`, `gpt-4o-mini-transcribe`, and `gpt-4o-transcribe`.
+Custom local CLI fallback — Set `HERMES_LOCAL_STT_COMMAND` if you want Hermes to call a local transcription command directly. The command template supports `{input_path}`, `{output_dir}`, `{language}`, and `{model}` placeholders.
+
+### Fallback Behavior​
+
+If your configured provider isn't available, Hermes automatically falls back:
+
+- Local faster-whisper unavailable → Tries a local `whisper` CLI or `HERMES_LOCAL_STT_COMMAND` before cloud providers
+
+- Groq key not set → Falls back to local transcription, then OpenAI
+
+- OpenAI key not set → Falls back to local transc
+
+
+============================================================
+PAGE: user-guide/features/voice-mode
+============================================================
+- 
+- User Guide
+- Web & Media
+- Voice ModeOn this page
+# Voice Mode
+
+Hermes Agent supports full voice interaction across CLI and messaging platforms. Talk to the agent using your microphone, hear spoken replies, and have live voice conversations in Discord voice channels.
+If you want a practical setup walkthrough with recommended configurations and real usage patterns, see Use Voice Mode with Hermes.
+
+## Prerequisites​
+
+Before using voice features, make sure you have:
+
+- Hermes Agent installed — `pip install hermes-agent` (see Installation)
+
+- An LLM provider configured — run `hermes model` or set your preferred provider credentials in `~/.hermes/.env`
+
+- A working base setup — run `hermes` to verify the agent responds to text before enabling voice
+
+tipThe `~/.hermes/` directory and default `config.yaml` are created automatically the first time you run `hermes`. You only need to create `~/.hermes/.env` manually for API keys.
+
+## Overview​
+
+FeaturePlatformDescriptionInteractive VoiceCLIPress Ctrl+B to record, agent auto-detects silence and respondsAuto Voice ReplyTelegram, DiscordAgent sends spoken audio alongside text responsesVoice ChannelDiscordBot joins VC, listens to users speaking, speaks replies back
+
+## Requirements​
+
+### Python Packages​
+
+```
+# CLI voice mode (microphone + audio playback)pip install "hermes-agent[voice]"# Discord + Telegram messaging (includes discord.py[voice] for VC support)pip install "hermes-agent[messaging]"# Premium TTS (ElevenLabs)pip install "hermes-agent[tts-premium]"# Local TTS (NeuTTS, optional)python -m pip install -U neutts[all]# Everything at oncepip install "hermes-agent[all]"
+```
+
+ExtraPackagesRequired For`voice``sounddevice`, `numpy`CLI voice mode`messaging``discord.py[voice]`, `python-telegram-bot`, `aiohttp`Discord & Telegram bots`tts-premium``elevenlabs`ElevenLabs TTS provider
+Optional local TTS provider: install `neutts` separately with `python -m pip install -U neutts[all]`. On first use it downloads the model automatically.
+info`discord.py[voice]` installs PyNaCl (for voice encryption) and opus bindings automatically. This is required for Discord voice channel support.
+
+### System Dependencies​
+
+```
+# macOSbrew install portaudio ffmpeg opusbrew install espeak-ng   # for NeuTTS# Ubuntu/Debiansudo apt install portaudio19-dev ffmpeg libopus0sudo apt install espeak-ng   # for NeuTTS
+```
+
+DependencyPurposeRequired ForPortAudioMicrophone input and audio playbackCLI voice modeffmpegAudio format conversion (MP3 → Opus, PCM → WAV)All platformsOpusDiscord voice codecDiscord voice channelsespeak-ngPhonemizer backendLocal NeuTTS provider
+
+### API Keys​
+
+Add to `~/.hermes/.env`:
+
+```
+# Speech-to-Text — local provider needs NO key at all# pip install faster-whisper          # Free, runs locally, recommendedGROQ_API_KEY=your-key                 # Groq Whisper — fast, free tier (cloud)VOICE_TOOLS_OPENAI_KEY=your-key       # OpenAI Whisper — paid (cloud)# Text-to-Speech (optional — Edge TTS and NeuTTS work without any key)ELEVENLABS_API_KEY=***           # ElevenLabs — premium quality# VOICE_TOOLS_OPENAI_KEY above also enables OpenAI TTS
+```
+
+tipIf `faster-whisper` is installed, voice mode works with zero API keys for STT. The model (~150 MB for `base`) downloads automatically on first use.
+
+## CLI Voice Mode​
+
+### Quick Start​
+
+Start the CLI and enable voice mode:
+
+```
+hermes                # Start the interactive CLI
+```
+
+Then use these commands inside the CLI:
+
+```
+/voice          Toggle voice mode on/off/voice on       Enable voice mode/voice off      Disable voice mode/voice tts      Toggle TTS output/voice status   Show current state
+```
+
+### How It Works​
+
+- Start the CLI with `hermes` and enable voice mode with `/voice on`
+
+- Press Ctrl+B — a beep plays (880Hz), recording starts
+
+- Speak — a live audio level bar shows your input: `● [▁▂▃▅▇▇▅▂] ❯`
+
+- Stop speaking — after 3 seconds of silence, recording auto-stops
+
+- Two beeps play (660Hz) confirming the recording ended
+
+- Audio is transcr
+
+
+============================================================
+PAGE: user-guide/docker
+============================================================
+- 
+- User Guide
+- Hermes Agent — DockerOn this page
+# Hermes Agent — Docker
+
+Want to run Hermes Agent, but without installing packages on your host? This'll sort you out.
+This will let you run the agent in a container, with the most relevant modes outlined below.
+The container stores all user data (config, API keys, sessions, skills, memories) in a single directory mounted from the host at `/opt/data`. The image itself is stateless and can be upgraded by pulling a new version without losing any configuration.
+
+## Quick start​
+
+If this is your first time running Hermes Agent, create a data directory on the host and start the container interactively to run the setup wizard:
+
+```
+mkdir -p ~/.hermesdocker run -it --rm \  -v ~/.hermes:/opt/data \  nousresearch/hermes-agent
+```
+
+This drops you into the setup wizard, which will prompt you for your API keys and write them to `~/.hermes/.env`. You only need to do this once. It is highly recommended to set up a chat system for the gateway to work with at this point.
+
+## Running in gateway mode​
+
+Once configured, run the container in the background as a persistent gateway (Telegram, Discord, Slack, WhatsApp, etc.):
+
+```
+docker run -d \  --name hermes \  --restart unless-stopped \  -v ~/.hermes:/opt/data \  nousresearch/hermes-agent gateway run
+```
+
+## Running interactively (CLI chat)​
+
+To open an interactive chat session against a running data directory:
+
+```
+docker run -it --rm \  -v ~/.hermes:/opt/data \  nousresearch/hermes-agent
+```
+
+## Upgrading​
+
+Pull the latest image and recreate the container. Your data directory is untouched.
+
+```
+docker pull nousresearch/hermes-agent:latestdocker rm -f hermesdocker run -d \  --name hermes \  --restart unless-stopped \  -v ~/.hermes:/opt/data \  nousresearch/hermes-agent
+```
+Edit this page
+
+
+============================================================
+PAGE: user-guide/profiles
+============================================================
+- 
+- User Guide
+- Profiles: Running Multiple AgentsOn this page
+# Profiles: Running Multiple Agents
+
+Run multiple independent Hermes agents on the same machine — each with its own config, API keys, memory, sessions, skills, and gateway.
+
+## What are profiles?​
+
+A profile is a fully isolated Hermes environment. Each profile gets its own directory containing its own `config.yaml`, `.env`, `SOUL.md`, memories, sessions, skills, cron jobs, and state database. Profiles let you run separate agents for different purposes — a coding assistant, a personal bot, a research agent — without any cross-contamination.
+When you create a profile, it automatically becomes its own command. Create a profile called `coder` and you immediately have `coder chat`, `coder setup`, `coder gateway start`, etc.
+
+## Quick start​
+
+```
+hermes profile create coder       # creates profile + "coder" command aliascoder setup                       # configure API keys and modelcoder chat                        # start chatting
+```
+
+That's it. `coder` is now a fully independent agent. It has its own config, its own memory, its own everything.
+
+## Creating a profile​
+
+### Blank profile​
+
+```
+hermes profile create mybot
+```
+
+Creates a fresh profile with bundled skills seeded. Run `mybot setup` to configure API keys, model, and gateway tokens.
+
+### Clone config only (--clone)​
+
+```
+hermes profile create work --clone
+```
+
+Copies your current profile's `config.yaml`, `.env`, and `SOUL.md` into the new profile. Same API keys and model, but fresh sessions and memory. Edit `~/.hermes/profiles/work/.env` for different API keys, or `~/.hermes/profiles/work/SOUL.md` for a different personality.
+
+### Clone everything (--clone-all)​
+
+```
+hermes profile create backup --clone-all
+```
+
+Copies everything — config, API keys, personality, all memories, full session history, skills, cron jobs, plugins. A complete snapshot. Useful for backups or forking an agent that already has context.
+
+### Clone from a specific profile​
+
+```
+hermes profile create work --clone --clone-from coder
+```
+
+## Using profiles​
+
+### Command aliases​
+
+Every profile automatically gets a command alias at `~/.local/bin/<name>`:
+
+```
+coder chat                    # chat with the coder agentcoder setup                   # configure coder's settingscoder gateway start           # start coder's gatewaycoder doctor                  # check coder's healthcoder skills list             # list coder's skillscoder config set model.model anthropic/claude-sonnet-4
+```
+
+The alias works with every hermes subcommand — it's just `hermes -p <name>` under the hood.
+
+### The -p flag​
+
+You can also target a profile explicitly with any command:
+
+```
+hermes -p coder chathermes --profile=coder doctorhermes chat -p coder -q "hello"    # works in any position
+```
+
+### Sticky default (hermes profile use)​
+
+```
+hermes profile use coderhermes chat                   # now targets coderhermes tools                  # configures coder's toolshermes profile use default    # switch back
+```
+
+Sets a default so plain `hermes` commands target that profile. Like `kubectl config use-context`.
+
+### Knowing where you are​
+
+The CLI always shows which profile is active:
+
+- Prompt: `coder ❯` instead of `❯`
+
+- Banner: Shows `Profile: coder` on startup
+
+- `hermes profile`: Shows current profile name, path, model, gateway status
+
+## Running gateways​
+
+Each profile runs its own gateway as a separate process with its own bot token:
+
+```
+coder gateway start           # starts coder's gatewayassistant gateway start       # starts assistant's gateway (separate process)
+```
+
+### Different bot tokens​
+
+Each profile has its own `.env` file. Configure a different Telegram/Discord/Slack bot token in each:
+
+```
+# Edit coder's tokensnano ~/.hermes/profiles/coder/.env# Edit assistant's tokensnano ~/.hermes/profiles/assistant/.env
+```
+
+### Safety: token locks​
+
+If two profiles accidentally use the same bot token, the second gateway will be blocked with a clear error namin
+
+
+============================================================
+PAGE: user-guide/features/api-server
+============================================================
+- 
+- User Guide
+- Integrations
+- API ServerOn this page
+# API Server
+
+The API server exposes hermes-agent as an OpenAI-compatible HTTP endpoint. Any frontend that speaks the OpenAI format — Open WebUI, LobeChat, LibreChat, NextChat, ChatBox, and hundreds more — can connect to hermes-agent and use it as a backend.
+Your agent handles requests with its full toolset (terminal, file operations, web search, memory, skills) and returns the final response. Tool calls execute invisibly server-side.
+
+## Quick Start​
+
+### 1. Enable the API server​
+
+Add to `~/.hermes/.env`:
+
+```
+API_SERVER_ENABLED=trueAPI_SERVER_KEY=change-me-local-dev# Optional: only if a browser must call Hermes directly# API_SERVER_CORS_ORIGINS=http://localhost:3000
+```
+
+### 2. Start the gateway​
+
+```
+hermes gateway
+```
+
+You'll see:
+
+```
+[API Server] API server listening on http://127.0.0.1:8642
+```
+
+### 3. Connect a frontend​
+
+Point any OpenAI-compatible client at `http://localhost:8642/v1`:
+
+```
+# Test with curlcurl http://localhost:8642/v1/chat/completions \  -H "Authorization: Bearer change-me-local-dev" \  -H "Content-Type: application/json" \  -d '{"model": "hermes-agent", "messages": [{"role": "user", "content": "Hello!"}]}'
+```
+
+Or connect Open WebUI, LobeChat, or any other frontend — see the Open WebUI integration guide for step-by-step instructions.
+
+## Endpoints​
+
+### POST /v1/chat/completions​
+
+Standard OpenAI Chat Completions format. Stateless — the full conversation is included in each request via the `messages` array.
+Request:
+
+```
+{  "model": "hermes-agent",  "messages": [    {"role": "system", "content": "You are a Python expert."},    {"role": "user", "content": "Write a fibonacci function"}  ],  "stream": false}
+```
+
+Response:
+
+```
+{  "id": "chatcmpl-abc123",  "object": "chat.completion",  "created": 1710000000,  "model": "hermes-agent",  "choices": [{    "index": 0,    "message": {"role": "assistant", "content": "Here's a fibonacci function..."},    "finish_reason": "stop"  }],  "usage": {"prompt_tokens": 50, "completion_tokens": 200, "total_tokens": 250}}
+```
+
+Streaming (`"stream": true`): Returns Server-Sent Events (SSE) with token-by-token response chunks. When streaming is enabled in config, tokens are emitted live as the LLM generates them. When disabled, the full response is sent as a single SSE chunk.
+
+### POST /v1/responses​
+
+OpenAI Responses API format. Supports server-side conversation state via `previous_response_id` — the server stores full conversation history (including tool calls and results) so multi-turn context is preserved without the client managing it.
+Request:
+
+```
+{  "model": "hermes-agent",  "input": "What files are in my project?",  "instructions": "You are a helpful coding assistant.",  "store": true}
+```
+
+Response:
+
+```
+{  "id": "resp_abc123",  "object": "response",  "status": "completed",  "model": "hermes-agent",  "output": [    {"type": "function_call", "name": "terminal", "arguments": "{\"command\": \"ls\"}", "call_id": "call_1"},    {"type": "function_call_output", "call_id": "call_1", "output": "README.md src/ tests/"},    {"type": "message", "role": "assistant", "content": [{"type": "output_text", "text": "Your project has..."}]}  ],  "usage": {"input_tokens": 50, "output_tokens": 200, "total_tokens": 250}}
+```
+
+Multi-turn with previous_response_id​
+Chain responses to maintain full context (including tool calls) across turns:
+
+```
+{  "input": "Now show me the README",  "previous_response_id": "resp_abc123"}
+```
+
+The server reconstructs the full conversation from the stored response chain — all previous tool calls and results are preserved.
+Named conversations​
+Use the `conversation` parameter instead of tracking response IDs:
+
+```
+{"input": "Hello", "conversation": "my-project"}{"input": "What's in src/?", "conversation": "my-project"}{"input": "Run the tests", "conversation": "my-project"}
+```
+
+The server automatically chains to the latest response in that conversation. Like the `/title` command for gateway session
+
+
+============================================================
+PAGE: reference/cli-commands
+============================================================
+- 
+- Reference
+- CLI Commands ReferenceOn this page
+# CLI Commands Reference
+
+This page covers the terminal commands you run from your shell.
+For in-chat slash commands, see Slash Commands Reference.
+
+## Global entrypoint​
+
+```
+hermes [global-options] <command> [subcommand/options]
+```
+
+### Global options​
+
+OptionDescription`--version`, `-V`Show version and exit.`--resume <session>`, `-r <session>`Resume a previous session by ID or title.`--continue [name]`, `-c [name]`Resume the most recent session, or the most recent session matching a title.`--worktree`, `-w`Start in an isolated git worktree for parallel-agent workflows.`--yolo`Bypass dangerous-command approval prompts.`--pass-session-id`Include the session ID in the agent's system prompt.
+
+## Top-level commands​
+
+CommandPurpose`hermes chat`Interactive or one-shot chat with the agent.`hermes model`Interactively choose the default provider and model.`hermes gateway`Run or manage the messaging gateway service.`hermes setup`Interactive setup wizard for all or part of the configuration.`hermes whatsapp`Configure and pair the WhatsApp bridge.`hermes login` / `logout`Authenticate with OAuth-backed providers.`hermes status`Show agent, auth, and platform status.`hermes cron`Inspect and tick the cron scheduler.`hermes webhook`Manage dynamic webhook subscriptions for event-driven activation.`hermes doctor`Diagnose config and dependency issues.`hermes config`Show, edit, migrate, and query configuration files.`hermes pairing`Approve or revoke messaging pairing codes.`hermes skills`Browse, install, publish, audit, and configure skills.`hermes honcho`Manage Honcho cross-session memory integration.`hermes acp`Run Hermes as an ACP server for editor integration.`hermes tools`Configure enabled tools per platform.`hermes sessions`Browse, export, prune, rename, and delete sessions.`hermes insights`Show token/cost/activity analytics.`hermes claw`OpenClaw migration helpers.`hermes version`Show version information.`hermes update`Pull latest code and reinstall dependencies.`hermes uninstall`Remove Hermes from the system.
+
+## hermes chat​
+
+```
+hermes chat [options]
+```
+
+Common options:
+OptionDescription`-q`, `--query "..."`One-shot, non-interactive prompt.`-m`, `--model <model>`Override the model for this run.`-t`, `--toolsets <csv>`Enable a comma-separated set of toolsets.`--provider <provider>`Force a provider: `auto`, `openrouter`, `nous`, `openai-codex`, `copilot`, `copilot-acp`, `anthropic`, `huggingface`, `alibaba`, `zai`, `kimi-coding`, `minimax`, `minimax-cn`, `kilocode`.`-s`, `--skills <name>`Preload one or more skills for the session (can be repeated or comma-separated).`-v`, `--verbose`Verbose output.`-Q`, `--quiet`Programmatic mode: suppress banner/spinner/tool previews.`--resume <session>` / `--continue [name]`Resume a session directly from `chat`.`--worktree`Create an isolated git worktree for this run.`--checkpoints`Enable filesystem checkpoints before destructive file changes.`--yolo`Skip approval prompts.`--pass-session-id`Pass the session ID into the system prompt.
+Examples:
+
+```
+hermeshermes chat -q "Summarize the latest PRs"hermes chat --provider openrouter --model anthropic/claude-sonnet-4.6hermes chat --toolsets web,terminal,skillshermes chat --quiet -q "Return only JSON"hermes chat --worktree -q "Review this repo and open a PR"
+```
+
+## hermes model​
+
+Interactive provider + model selector.
+
+```
+hermes model
+```
+
+Use this when you want to:
+
+- switch default providers
+
+- log into OAuth-backed providers during model selection
+
+- pick from provider-specific model lists
+
+- configure a custom/self-hosted endpoint
+
+- save the new default into config
+
+### /model slash command (mid-session)​
+
+Switch models without leaving a session:
+
+```
+/model                              # Show current model and available options/model claude-sonnet-4              # Switch model (auto-detects provider)/model zai:glm-5                    # Switch provider and model/model custom:qwen-2.5              #
+
+
+============================================================
+PAGE: reference/environment-variables
+============================================================
+- 
+- Reference
+- Environment VariablesOn this page
+# Environment Variables Reference
+
+All variables go in `~/.hermes/.env`. You can also set them with `hermes config set VAR value`.
+
+## LLM Providers​
+
+VariableDescription`OPENROUTER_API_KEY`OpenRouter API key (recommended for flexibility)`OPENROUTER_BASE_URL`Override the OpenRouter-compatible base URL`AI_GATEWAY_API_KEY`Vercel AI Gateway API key (ai-gateway.vercel.sh)`AI_GATEWAY_BASE_URL`Override AI Gateway base URL (default: `https://ai-gateway.vercel.sh/v1`)`OPENAI_API_KEY`API key for custom OpenAI-compatible endpoints (used with `OPENAI_BASE_URL`)`OPENAI_BASE_URL`Base URL for custom endpoint (VLLM, SGLang, etc.)`COPILOT_GITHUB_TOKEN`GitHub token for Copilot API — first priority (OAuth `gho_*` or fine-grained PAT `github_pat_*`; classic PATs `ghp_*` are not supported)`GH_TOKEN`GitHub token — second priority for Copilot (also used by `gh` CLI)`GITHUB_TOKEN`GitHub token — third priority for Copilot`HERMES_COPILOT_ACP_COMMAND`Override Copilot ACP CLI binary path (default: `copilot`)`COPILOT_CLI_PATH`Alias for `HERMES_COPILOT_ACP_COMMAND``HERMES_COPILOT_ACP_ARGS`Override Copilot ACP arguments (default: `--acp --stdio`)`COPILOT_ACP_BASE_URL`Override Copilot ACP base URL`GLM_API_KEY`z.ai / ZhipuAI GLM API key (z.ai)`ZAI_API_KEY`Alias for `GLM_API_KEY``Z_AI_API_KEY`Alias for `GLM_API_KEY``GLM_BASE_URL`Override z.ai base URL (default: `https://api.z.ai/api/paas/v4`)`KIMI_API_KEY`Kimi / Moonshot AI API key (moonshot.ai)`KIMI_BASE_URL`Override Kimi base URL (default: `https://api.moonshot.ai/v1`)`MINIMAX_API_KEY`MiniMax API key — global endpoint (minimax.io)`MINIMAX_BASE_URL`Override MiniMax base URL (default: `https://api.minimax.io/v1`)`MINIMAX_CN_API_KEY`MiniMax API key — China endpoint (minimaxi.com)`MINIMAX_CN_BASE_URL`Override MiniMax China base URL (default: `https://api.minimaxi.com/v1`)`KILOCODE_API_KEY`Kilo Code API key (kilo.ai)`KILOCODE_BASE_URL`Override Kilo Code base URL (default: `https://api.kilo.ai/api/gateway`)`HF_TOKEN`Hugging Face token for Inference Providers (huggingface.co/settings/tokens)`HF_BASE_URL`Override Hugging Face base URL (default: `https://router.huggingface.co/v1`)`ANTHROPIC_API_KEY`Anthropic Console API key (console.anthropic.com)`ANTHROPIC_TOKEN`Manual or legacy Anthropic OAuth/setup-token override`DASHSCOPE_API_KEY`Alibaba Cloud DashScope API key for Qwen models (modelstudio.console.alibabacloud.com)`DASHSCOPE_BASE_URL`Custom DashScope base URL (default: `https://coding-intl.dashscope.aliyuncs.com/v1`)`DEEPSEEK_API_KEY`DeepSeek API key for direct DeepSeek access (platform.deepseek.com)`DEEPSEEK_BASE_URL`Custom DeepSeek API base URL`OPENCODE_ZEN_API_KEY`OpenCode Zen API key — pay-as-you-go access to curated models (opencode.ai)`OPENCODE_ZEN_BASE_URL`Override OpenCode Zen base URL`OPENCODE_GO_API_KEY`OpenCode Go API key — $10/month subscription for open models (opencode.ai)`OPENCODE_GO_BASE_URL`Override OpenCode Go base URL`CLAUDE_CODE_OAUTH_TOKEN`Explicit Claude Code token override if you export one manually`HERMES_MODEL`Preferred model name (checked before `LLM_MODEL`, used by gateway)`LLM_MODEL`Default model name (fallback when not set in config.yaml)`VOICE_TOOLS_OPENAI_KEY`Preferred OpenAI key for OpenAI speech-to-text and text-to-speech providers`HERMES_LOCAL_STT_COMMAND`Optional local speech-to-text command template. Supports `{input_path}`, `{output_dir}`, `{language}`, and `{model}` placeholders`HERMES_LOCAL_STT_LANGUAGE`Default language passed to `HERMES_LOCAL_STT_COMMAND` or auto-detected local `whisper` CLI fallback (default: `en`)`HERMES_HOME`Override Hermes config directory (default: `~/.hermes`). Also scopes the gateway PID file and systemd service name, so multiple installations can run concurrently
+
+## Provider Auth (OAuth)​
+
+For native Anthropic auth, Hermes prefers Claude Code's own credential files when they exist because those credentials can refresh automatically. Environment variables such as `ANTHROPIC_TOKEN` remain useful as 
+
+
+============================================================
+PAGE: reference/faq
+============================================================
+- 
+- Reference
+- FAQ & TroubleshootingOn this page
+# FAQ & Troubleshooting
+
+Quick answers and fixes for the most common questions and issues.
+
+## Frequently Asked Questions​
+
+### What LLM providers work with Hermes?​
+
+Hermes Agent works with any OpenAI-compatible API. Supported providers include:
+
+- OpenRouter — access hundreds of models through one API key (recommended for flexibility)
+
+- Nous Portal — Nous Research's own inference endpoint
+
+- OpenAI — GPT-4o, o1, o3, etc.
+
+- Anthropic — Claude models (via OpenRouter or compatible proxy)
+
+- Google — Gemini models (via OpenRouter or compatible proxy)
+
+- z.ai / ZhipuAI — GLM models
+
+- Kimi / Moonshot AI — Kimi models
+
+- MiniMax — global and China endpoints
+
+- Local models — via Ollama, vLLM, llama.cpp, SGLang, or any OpenAI-compatible server
+
+Set your provider with `hermes model` or by editing `~/.hermes/.env`. See the Environment Variables reference for all provider keys.
+
+### Does it work on Windows?​
+
+Not natively. Hermes Agent requires a Unix-like environment. On Windows, install WSL2 and run Hermes from inside it. The standard install command works perfectly in WSL2:
+
+```
+curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash
+```
+
+### Is my data sent anywhere?​
+
+API calls go only to the LLM provider you configure (e.g., OpenRouter, your local Ollama instance). Hermes Agent does not collect telemetry, usage data, or analytics. Your conversations, memory, and skills are stored locally in `~/.hermes/`.
+
+### Can I use it offline / with local models?​
+
+Yes. Run `hermes model`, select Custom endpoint, and enter your server's URL:
+
+```
+hermes model# Select: Custom endpoint (enter URL manually)# API base URL: http://localhost:11434/v1# API key: ollama# Model name: qwen3.5:27b# Context length: 32768   ← set this to match your server's actual context window
+```
+
+Or configure it directly in `config.yaml`:
+
+```
+model:  default: qwen3.5:27b  provider: custom  base_url: http://localhost:11434/v1
+```
+
+Hermes persists the endpoint, provider, and base URL in `config.yaml` so it survives restarts. If your local server has exactly one model loaded, `/model custom` auto-detects it. You can also set `provider: custom` in config.yaml — it's a first-class provider, not an alias for anything else.
+This works with Ollama, vLLM, llama.cpp server, SGLang, LocalAI, and others. See the Configuration guide for details.
+Ollama usersIf you set a custom `num_ctx` in Ollama (e.g., `ollama run --num_ctx 16384`), make sure to set the matching context length in Hermes — Ollama's `/api/show` reports the model's maximum context, not the effective `num_ctx` you configured.
+
+### How much does it cost?​
+
+Hermes Agent itself is free and open-source (MIT license). You pay only for the LLM API usage from your chosen provider. Local models are completely free to run.
+
+### Can multiple people use one instance?​
+
+Yes. The messaging gateway lets multiple users interact with the same Hermes Agent instance via Telegram, Discord, Slack, WhatsApp, or Home Assistant. Access is controlled through allowlists (specific user IDs) and DM pairing (first user to message claims access).
+
+### What's the difference between memory and skills?​
+
+- Memory stores facts — things the agent knows about you, your projects, and preferences. Memories are retrieved automatically based on relevance.
+
+- Skills store procedures — step-by-step instructions for how to do things. Skills are recalled when the agent encounters a similar task.
+
+Both persist across sessions. See Memory and Skills for details.
+
+### Can I use it in my own Python project?​
+
+Yes. Import the `AIAgent` class and use Hermes programmatically:
+
+```
+from hermes.agent import AIAgentagent = AIAgent(model="openrouter/nous/hermes-3-llama-3.1-70b")response = agent.chat("Explain quantum computing briefly")
+```
+
+See the Python Library guide for full API usage.
+
+## Troubleshooting​
+
+### Installation Issues​
+
+`hermes: command not found` after in
+
+
+============================================================
+PAGE: reference/skills-catalog
+============================================================
+- 
+- Reference
+- Bundled Skills CatalogOn this page
+# Bundled Skills Catalog
+
+Hermes ships with a large built-in skill library copied into `~/.hermes/skills/` on install. This page catalogs the bundled skills that live in the repository under `skills/`.
+
+## apple​
+
+Apple/macOS-specific skills — iMessage, Reminders, Notes, FindMy, and macOS automation. These skills only load on macOS systems.
+SkillDescriptionPath`apple-notes`Manage Apple Notes via the memo CLI on macOS (create, view, search, edit).`apple/apple-notes``apple-reminders`Manage Apple Reminders via remindctl CLI (list, add, complete, delete).`apple/apple-reminders``findmy`Track Apple devices and AirTags via FindMy.app on macOS using AppleScript and screen capture.`apple/findmy``imessage`Send and receive iMessages/SMS via the imsg CLI on macOS.`apple/imessage`
+
+## autonomous-ai-agents​
+
+Skills for spawning and orchestrating autonomous AI coding agents and multi-agent workflows — running independent agent processes, delegating tasks, and coordinating parallel workstreams.
+SkillDescriptionPath`claude-code`Delegate coding tasks to Claude Code (Anthropic's CLI agent). Use for building features, refactoring, PR reviews, and iterative coding. Requires the claude CLI installed.`autonomous-ai-agents/claude-code``codex`Delegate coding tasks to OpenAI Codex CLI agent. Use for building features, refactoring, PR reviews, and batch issue fixing. Requires the codex CLI and a git repository.`autonomous-ai-agents/codex``hermes-agent-spawning`Spawn additional Hermes Agent instances as autonomous subprocesses for independent long-running tasks. Supports non-interactive one-shot mode (-q) and interactive PTY mode for multi-turn collaboration. Different from delegate_task — this runs a full separate hermes process.`autonomous-ai-agents/hermes-agent``opencode`Delegate coding tasks to OpenCode CLI agent for feature implementation, refactoring, PR review, and long-running autonomous sessions. Requires the opencode CLI installed and authenticated.`autonomous-ai-agents/opencode`
+
+## data-science​
+
+Skills for data science workflows — interactive exploration, Jupyter notebooks, data analysis, and visualization.
+SkillDescriptionPath`jupyter-live-kernel`Use a live Jupyter kernel for stateful, iterative Python execution via hamelnb. Load this skill when the task involves exploration, iteration, or inspecting intermediate results.`data-science/jupyter-live-kernel`
+
+## creative​
+
+Creative content generation — ASCII art, hand-drawn style diagrams, and visual design tools.
+SkillDescriptionPath`ascii-art`Generate ASCII art using pyfiglet (571 fonts), cowsay, boxes, toilet, image-to-ascii, remote APIs (asciified, ascii.co.uk), and LLM fallback. No API keys required.`creative/ascii-art``ascii-video`"Production pipeline for ASCII art video — any format. Converts video/audio/images/generative input into colored ASCII character video output (MP4, GIF, image sequence). Covers: video-to-ASCII conversion, audio-reactive music visualizers, generative ASCII art animations, hybrid…`creative/ascii-video``excalidraw`Create hand-drawn style diagrams using Excalidraw JSON format. Generate .excalidraw files for architecture diagrams, flowcharts, sequence diagrams, concept maps, and more. Files can be opened at excalidraw.com or uploaded for shareable links.`creative/excalidraw`
+
+## devops​
+
+DevOps and infrastructure automation skills.
+SkillDescriptionPath`webhook-subscriptions`Create and manage webhook subscriptions for event-driven agent activation. External services (GitHub, Stripe, CI/CD, IoT) POST events to trigger agent runs. Requires webhook platform to be enabled.`devops/webhook-subscriptions`
+
+## dogfood​
+
+SkillDescriptionPath`dogfood`Systematic exploratory QA testing of web applications — find bugs, capture evidence, and generate structured reports.`dogfood/dogfood``hermes-agent-setup`Help users configure Hermes Agent — CLI usage, setup wizard, model/provider selection, tools, skills, voice/STT/TTS, gateway, 
+
