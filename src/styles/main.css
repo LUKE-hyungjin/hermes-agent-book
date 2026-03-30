@@ -1,0 +1,100 @@
+@import "tailwindcss";
+@import "highlight.js/styles/github-dark.css";
+
+@theme {
+  --font-sans: 'Noto Sans KR', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+/* Sidebar scrollbar */
+.sidebar-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+.sidebar-scroll::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 4px;
+}
+.dark .sidebar-scroll::-webkit-scrollbar-thumb {
+  background: #4b5563;
+}
+
+/* Content prose styles */
+.prose h1 {
+  @apply text-3xl font-bold mb-4 mt-2;
+}
+.prose h2 {
+  @apply text-2xl font-bold mb-3 mt-10 pb-2 border-b border-gray-200 dark:border-gray-800;
+}
+.prose h3 {
+  @apply text-xl font-bold mb-2 mt-8;
+}
+.prose p {
+  @apply mb-4 leading-7;
+}
+.prose ul, .prose ol {
+  @apply mb-4 pl-6;
+}
+.prose ul {
+  @apply list-disc;
+}
+.prose ol {
+  @apply list-decimal;
+}
+.prose li {
+  @apply mb-1 leading-7;
+}
+.prose code {
+  @apply font-mono text-sm bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded;
+}
+.prose pre {
+  @apply mb-6 rounded-lg overflow-x-auto;
+}
+.prose pre code {
+  @apply bg-transparent px-0 py-0;
+}
+.prose blockquote {
+  @apply border-l-4 border-blue-500 dark:border-blue-400 pl-4 py-2 mb-4 bg-blue-50 dark:bg-blue-950/30 rounded-r-lg italic;
+}
+.prose table {
+  @apply mb-6 w-full border-collapse;
+}
+.prose th {
+  @apply bg-gray-100 dark:bg-gray-800 font-bold text-left px-4 py-2 border border-gray-300 dark:border-gray-700;
+}
+.prose td {
+  @apply px-4 py-2 border border-gray-300 dark:border-gray-700;
+}
+.prose a {
+  @apply text-blue-600 dark:text-blue-400 underline hover:no-underline;
+}
+.prose hr {
+  @apply my-8 border-gray-200 dark:border-gray-800;
+}
+.prose img {
+  @apply rounded-lg shadow-md my-4;
+}
+
+/* Tip/Warning boxes */
+.tip-box {
+  @apply border-l-4 border-green-500 bg-green-50 dark:bg-green-950/30 pl-4 py-3 pr-4 rounded-r-lg mb-4;
+}
+.warning-box {
+  @apply border-l-4 border-amber-500 bg-amber-50 dark:bg-amber-950/30 pl-4 py-3 pr-4 rounded-r-lg mb-4;
+}
+.info-box {
+  @apply border-l-4 border-blue-500 bg-blue-50 dark:bg-blue-950/30 pl-4 py-3 pr-4 rounded-r-lg mb-4;
+}
+
+/* Mobile sidebar overlay */
+.sidebar-overlay {
+  @apply fixed inset-0 bg-black/50 z-30 lg:hidden;
+}
+
+/* Smooth page transitions */
+.content-enter {
+  animation: fadeIn 0.2s ease-out;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
