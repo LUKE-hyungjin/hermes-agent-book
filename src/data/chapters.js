@@ -50,15 +50,16 @@ export const chapters = [
   { id: '27-voice', num: '27', title: '음성 모드', category: 'automation' },
 
   // 배포
-  { id: '28-docker', num: '28', title: 'Docker 배포', category: 'deploy' },
-  { id: '29-profiles', num: '29', title: '프로필 (다중 에이전트)', category: 'deploy' },
-  { id: '30-api-server', num: '30', title: 'API 서버', category: 'deploy' },
+  { id: '28-acpx', num: '28', title: 'acpx: 에이전트 간 통신', category: 'deploy' },
+  { id: '29-docker', num: '29', title: 'Docker 배포', category: 'deploy' },
+  { id: '30-profiles', num: '30', title: '프로필 (다중 에이전트)', category: 'deploy' },
+  { id: '31-api-server', num: '31', title: 'API 서버', category: 'deploy' },
 
   // 부록
-  { id: '31-cli-reference', num: '31', title: 'CLI 명령어 레퍼런스', category: 'reference' },
-  { id: '32-env-vars', num: '32', title: '환경변수', category: 'reference' },
-  { id: '33-faq', num: '33', title: 'FAQ & 트러블슈팅', category: 'reference' },
-  { id: '34-skills-catalog', num: '34', title: '스킬 카탈로그', category: 'reference' },
+  { id: '32-cli-reference', num: '32', title: 'CLI 명령어 레퍼런스', category: 'reference' },
+  { id: '33-env-vars', num: '33', title: '환경변수', category: 'reference' },
+  { id: '34-faq', num: '34', title: 'FAQ & 트러블슈팅', category: 'reference' },
+  { id: '35-skills-catalog', num: '35', title: '스킬 카탈로그', category: 'reference' },
 ];
 
 export function getChapterByIndex(idx) {

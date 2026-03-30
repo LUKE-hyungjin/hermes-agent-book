@@ -1,4 +1,4 @@
-# 29. 프로필
+# 30. 프로필
 
 > 프로필은 하나의 Hermes 설치 안에서 여러 개의 완전히 독립된 에이전트를 만드는 기능입니다.
 
@@ -116,5 +116,5 @@ nano ~/.hermes/profiles/assistant/.env
 
 ---
 
-**이전:** [← 27. Docker 실행](#28-docker)
-**다음:** [29. API 서버 →](#30-api-server)
+**이전:** [← 29. Docker 실행](#29-docker)
+**다음:** [31. API 서버 →](#31-api-server)
