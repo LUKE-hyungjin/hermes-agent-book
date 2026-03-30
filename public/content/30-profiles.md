@@ -51,6 +51,8 @@ hermes profile create research --clone --clone-from coder
 
 프로필은 전용 명령 alias와 `-p` 플래그 두 방식으로 접근할 수 있습니다.
 
+공식 문서 기준 alias는 보통 `~/.local/bin/<profile-name>` 쪽에 만들어집니다. 따라서 프로필을 만든 뒤 `coder: command not found`가 나오면 PATH에 `~/.local/bin`이 들어 있는지 먼저 확인하세요.
+
 ```bash
 coder chat
 coder gateway start
@@ -90,7 +92,7 @@ coder gateway start
 assistant gateway start
 ```
 
-각 프로필의 `.env`가 अलग-अलग이므로 Telegram/Discord/Slack 토큰도 따로 둘 수 있습니다.
+각 프로필의 `.env`가 서로 분리되므로 Telegram/Discord/Slack 토큰도 따로 둘 수 있습니다.
 
 ```bash
 nano ~/.hermes/profiles/coder/.env

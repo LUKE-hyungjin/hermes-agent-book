@@ -114,5 +114,5 @@ async def handle(event_type: str, context: dict):
 
 ---
 
-**이전:** [← 20. Cron 예약 작업](#21-cron)
-**다음:** [22. 서브에이전트 위임 →](#23-delegation)
+**이전:** [← 21. Cron 예약 작업](#21-cron)
+**다음:** [23. 서브에이전트 위임 →](#23-delegation)

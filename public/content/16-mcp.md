@@ -34,7 +34,7 @@ mcp_servers:
     args: ["-y", "@modelcontextprotocol/server-filesystem", "/home/user/projects"]
 ```
 
-그리고 Hermes를 실행한 뒤 자연어로 요청합니다.
+그리고 Hermes를 실행한 뒤 자연어로 요청합니다. 이미 실행 중인 세션에서 MCP 설정을 바꿨을 때만 `/reload-mcp`가 필요합니다.
 
 ```text
 /reload-mcp
@@ -123,5 +123,5 @@ MCP를 이해하면 Hermes는 더 이상 폐쇄적인 단일 에이전트가 아
 
 ---
 
-**이전:** [← 14. 도구](#15-tools)
-**다음:** [16. 메시징 개요 →](#17-messaging-overview)
+**이전:** [← 15. 도구](#15-tools)
+**다음:** [17. 메시징 개요 →](#17-messaging-overview)

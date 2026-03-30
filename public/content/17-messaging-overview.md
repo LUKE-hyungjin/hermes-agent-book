@@ -118,5 +118,5 @@ EMAIL_ALLOWED_USERS=trusted@example.com
 
 ---
 
-**이전:** [← 15. MCP 연동](#16-mcp)
-**다음:** [17. Telegram 설정 →](#18-telegram)
+**이전:** [← 16. MCP](#16-mcp)
+**다음:** [18. Telegram 설정 →](#18-telegram)

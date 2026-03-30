@@ -98,5 +98,5 @@ echo $XDG_SESSION_TYPE
 
 ---
 
-**이전:** [← 24. 코드 실행](#25-code-execution)
-**다음:** [26. 음성 기능 →](#27-voice)
+**이전:** [← 25. 코드 실행](#25-code-execution)
+**다음:** [27. 음성 기능 →](#27-voice)

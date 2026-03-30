@@ -115,5 +115,5 @@ launchctl remove ai.hermes.gateway
 
 ---
 
-**이전:** [← 02. 설치 및 설정](#03-installation)
-**다음:** [04. 학습 경로 →](#05-learning-path)
+**이전:** [← 03. 설치 및 설정](#03-installation)
+**다음:** [05. 학습 경로 →](#05-learning-path)

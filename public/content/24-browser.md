@@ -13,7 +13,7 @@
 | 로컬 Chrome CDP | 내 Chrome에 직접 연결, 눈으로 보며 작업 가능 |
 | 로컬 브라우저 모드 | `agent-browser`와 로컬 Chromium 사용 |
 
-모든 모드에서 에이전트는 웹사이트 탐색, 요소 상호작용, 폼 입력, 정보 추출을 수행할 수 있습니다.
+모든 모드에서 에이전트는 웹사이트 탐색, 요소 상호작용, 폼 입력, 정보 추출을 수행할 수 있습니다. 이 기능을 쓰려면 `browser` 도구셋이 활성화되어 있어야 합니다.
 
 ## Hermes가 페이지를 보는 방식
 
@@ -34,7 +34,7 @@
 
 ```bash
 BROWSERBASE_API_KEY=***
-BROWSERBASE_PROJECT_ID=your-project-id-here
+BROWSERBASE_PROJECT_ID=your-project-id-here  # 사용하는 환경에서 필요할 때만
 ```
 
 ### Browser Use
@@ -111,5 +111,5 @@ BROWSER_INACTIVITY_TIMEOUT=300
 
 ---
 
-**이전:** [← 22. 서브에이전트 위임](#23-delegation)
-**다음:** [24. 코드 실행 →](#25-code-execution)
+**이전:** [← 23. 서브에이전트 위임](#23-delegation)
+**다음:** [25. 코드 실행 →](#25-code-execution)

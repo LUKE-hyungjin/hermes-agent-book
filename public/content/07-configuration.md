@@ -12,6 +12,7 @@ Hermes는 설정을 여러 파일에 흩뿌리지 않고 하나의 홈 디렉터
 ├── .env
 ├── auth.json
 ├── SOUL.md
+├── state.db
 ├── memories/
 ├── skills/
 ├── cron/
@@ -25,9 +26,10 @@ Hermes는 설정을 여러 파일에 흩뿌리지 않고 하나의 홈 디렉터
 | `.env` | API 키, 토큰, 비밀번호 같은 비밀값 |
 | `auth.json` | OAuth 인증 정보 |
 | `SOUL.md` | 에이전트 기본 성격 |
+| `state.db` | 세션 메타데이터와 검색 인덱스(SQLite) |
 | `memories/` | 장기 메모리 저장 |
 | `skills/` | 설치/생성된 스킬 |
-| `sessions/` | 세션 기록 |
+| `sessions/` | 주로 raw transcript / gateway 기록 |
 | `logs/` | 실행 로그 |
 
 ## 자주 쓰는 설정 명령
@@ -151,5 +153,5 @@ hermes config migrate
 
 ---
 
-**이전:** [← 05. CLI 인터페이스](#06-cli)
-**다음:** [07. 세션 관리 →](#08-sessions)
+**이전:** [← 06. CLI 인터페이스](#06-cli)
+**다음:** [08. 세션 관리 →](#08-sessions)

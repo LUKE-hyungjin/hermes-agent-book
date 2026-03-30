@@ -1,107 +1,99 @@
 # 09. 프로바이더 설정
 
-> Hermes는 하나의 모델 제공자에 고정되지 않으며, OAuth형 서비스부터 API 키 기반 허브, 로컬 OpenAI 호환 서버까지 같은 인터페이스로 바꿔 쓸 수 있습니다.
-
-## 왜 프로바이더를 따로 이해해야 하나요?
-
-Hermes에서 "어떤 모델을 쓰는가"는 단순 취향 문제가 아닙니다. 비용, 속도, 인증 방식, 사용 가능한 모델 계열, 장기 세션 안정성까지 모두 프로바이더 선택의 영향을 받습니다. 예를 들어 처음 시작하는 사용자는 `hermes model`로 OAuth 로그인을 선호할 수 있고, 파워유저는 OpenRouter처럼 여러 벤더를 한 키로 다루는 허브를 더 좋아할 수 있습니다. 또 팀 환경에서는 사내 OpenAI 호환 엔드포인트나 로컬 서버를 붙이는 경우도 많습니다.
+> Hermes는 하나의 모델 회사에 묶이지 않습니다. OAuth형 로그인, API 키 기반 허브, OpenAI 호환 커스텀 엔드포인트를 모두 같은 CLI 흐름 안에서 다룰 수 있습니다.
 
 ## 가장 쉬운 시작
 
-대부분의 사용자는 아래 명령부터 시작하면 됩니다.
+대부분의 사용자는 아래 한 줄부터 시작하면 됩니다.
 
 ```bash
 hermes model
 ```
 
-이 명령은 지원 프로바이더 목록을 보여 주고, 필요한 경우 OAuth 로그인 또는 API 키 입력 흐름을 안내합니다. 설정 파일 구조를 아직 잘 모르는 초반에는 직접 `.env`를 편집하기보다 이 마법사를 먼저 쓰는 편이 안전합니다.
+이 명령은 현재 설치본이 지원하는 프로바이더 목록을 보여 주고, 필요한 경우 로그인(OAuth) 또는 API 키 입력 흐름으로 연결해 줍니다. 초반에는 `.env`를 직접 편집하기보다 이 경로가 가장 안전합니다.
 
-## 주요 프로바이더 비교
+## 현재 문서 기준으로 자주 쓰는 분류
 
-| 프로바이더 | 인증 방식 | 적합한 상황 |
-|-----------|-----------|-------------|
-| Nous Portal | OAuth | 가장 빠른 시작, 설정 난이도 최소화 |
-| Anthropic | Claude 인증 또는 API 키 | Claude 계열을 직접 안정적으로 사용 |
-| OpenRouter | API 키 | 여러 모델을 한 계정으로 비교하고 싶을 때 |
-| GitHub Copilot 계열 | OAuth / 토큰 | 개발자 워크플로우와 친화적일 때 |
-| Hugging Face | API 키 | 오픈 모델 실험과 연구 |
-| Custom Endpoint | URL + 키 | Ollama, vLLM, 사내 게이트웨이 연결 |
+공식 문서와 현재 설치 흐름을 묶어서 보면, 프로바이더는 대략 세 가지로 이해하면 쉽습니다.
 
-Hermes 문서 기준으로 OpenRouter, Anthropic, Hugging Face, Copilot 계열 외에도 GLM, Kimi, MiniMax, Alibaba Cloud, OpenCode 계열 같은 다양한 제공자와 호환됩니다.
+| 분류 | 예시 | 적합한 상황 |
+|------|------|-------------|
+| OAuth/로그인형 | Nous Portal, OpenAI Codex 등 | 빠르게 시작하고 싶을 때 |
+| API 키형 | OpenRouter, Anthropic, GLM(z.ai), Kimi, MiniMax, Hugging Face, AI Gateway 등 | 명시적 키 관리와 모델 라우팅이 필요할 때 |
+| 커스텀 엔드포인트 | Ollama, vLLM, SGLang, 사내 OpenAI 호환 서버 | 로컬 모델, 사내망, 자체 게이트웨이 |
 
-## 설정 파일 예시
+지원 목록은 버전마다 조금씩 바뀔 수 있으므로, **최종 기준은 `hermes model`과 공식 프로바이더 문서**로 보는 편이 안전합니다.
 
-비밀값은 `~/.hermes/.env`, 일반 설정은 `~/.hermes/config.yaml`에 두는 것이 기본입니다.
+## 어떤 선택이 쉬운가요?
+
+| 목적 | 추천 시작점 |
+|------|-------------|
+| 가장 빠른 입문 | `hermes model`에서 로그인형 프로바이더 선택 |
+| 여러 모델 비교 | OpenRouter |
+| Claude 계열 직접 사용 | Anthropic |
+| 로컬/사내 서버 연결 | Custom endpoint |
+| 연구/오픈모델 실험 | Hugging Face 또는 커스텀 엔드포인트 |
+
+## 비밀값과 일반 설정의 위치
+
+기본 원칙은 단순합니다.
+
+- 비밀값: `~/.hermes/.env`
+- 일반 설정: `~/.hermes/config.yaml`
+
+예시:
 
 ```bash
-OPENROUTER_API_KEY=sk-or-your-key
-ANTHROPIC_API_KEY=your-anthropic-key
-HF_TOKEN=hf_your_token
-OPENAI_API_KEY=ollama
+OPENROUTER_API_KEY=***
+ANTHROPIC_API_KEY=***
+OPENAI_API_KEY=***
 OPENAI_BASE_URL=http://localhost:11434/v1
 ```
 
-```yaml
-model:
-  provider: openrouter
-  default: anthropic/claude-sonnet-4.6
-```
-
-이렇게 두면 평소에는 OpenRouter를 기본값으로 쓰고, 필요할 때만 CLI 인자로 덮어쓸 수 있습니다.
-
 ## 커스텀 엔드포인트 연결
 
-Hermes는 OpenAI 호환 API를 제공하는 로컬 또는 사내 서버를 붙일 수 있습니다. Ollama, vLLM, SGLang 같은 엔진을 쓸 때 특히 유용합니다.
+Hermes는 OpenAI 호환 API를 제공하는 로컬 또는 사내 서버를 붙일 수 있습니다. 이때 가장 중요한 것은 **URL만 맞추는 것**이 아니라, 실제 모델 이름과 컨텍스트 길이를 함께 맞추는 것입니다.
 
-```yaml
-model:
-  provider: custom
-  default: qwen3.5:27b
-  base_url: http://localhost:11434/v1
+공식 FAQ 예시는 이런 흐름입니다.
+
+```bash
+hermes model
+# Select: Custom endpoint
+# API base URL: http://localhost:11434/v1
+# API key: ollama
+# Model name: qwen3.5:27b
+# Context length: 32768
 ```
 
-직접 연결할 때는 단순히 URL만 맞추는 것이 아니라, 실제 모델 이름과 컨텍스트 길이, 타임아웃, 스트리밍 지원 여부까지 함께 점검해야 합니다.
+로컬 모델 연결이 어색하게 느껴질 때는 직접 `config.yaml`을 쓰기보다 먼저 이 대화형 흐름을 한 번 통과하는 편이 덜 헷갈립니다.
 
 ## 실행 시 일시적으로 바꾸기
 
-기본값을 건드리지 않고 이번 실행만 다른 프로바이더를 테스트하려면 CLI 인자가 가장 편합니다.
+기본값을 유지한 채 이번 실행만 다른 조합을 쓰고 싶다면 CLI 인자가 편합니다.
 
 ```bash
-hermes chat --provider openrouter --model anthropic/claude-sonnet-4.6
+hermes chat --provider openrouter --model anthropic/claude-sonnet-4.5
 hermes chat --provider anthropic --model claude-sonnet-4
 hermes chat --provider custom --model qwen3.5:27b
 ```
 
-이 방식은 비용 비교, 품질 비교, 벤더 장애 우회에 유용합니다. 운영 중에는 "기본값은 안정형, 실험은 CLI override" 규칙을 잡아 두면 설정이 덜 꼬입니다.
-
-## 선택 기준
-
-| 목적 | 추천 선택 |
-|------|-----------|
-| 가장 쉬운 입문 | `hermes model` + OAuth 계열 |
-| 모델 선택 폭 최우선 | OpenRouter |
-| Claude 중심 워크플로우 | Anthropic 직접 연결 또는 OpenRouter 경유 |
-| 폐쇄망/사내 환경 | Custom Endpoint |
-| 저비용 로컬 실험 | Ollama 등 로컬 서버 |
-| 빠른 비교 테스트 | 실행 시 `--provider`, `--model` 조합 |
-
-:::tip
-프로바이더를 고를 때 "어떤 모델이 최고인가"보다 "내 작업에서 인증, 비용, 속도, 도구 호출 안정성이 어떤 조합으로 가장 관리하기 쉬운가"를 먼저 보세요. Hermes는 한 번 정하면 영원히 고정하는 도구가 아니라, 작업에 맞춰 라우팅해 가는 구조에 더 가깝습니다.
-:::
+다만 프로바이더 이름과 모델 표기는 버전/벤더 정책에 따라 바뀔 수 있으므로, 실제 사용 시에는 `hermes model`에서 보이는 표기를 우선하세요.
 
 ## 빠른 점검 흐름
 
-연결이 제대로 되었는지 확인할 때는 아래 세 줄이면 충분합니다.
-
 ```bash
 hermes model
-hermes config
+hermes status
 hermes chat -q "현재 연결된 모델과 프로바이더를 알려줘"
 ```
 
-여기서 응답이 정상이라면 프로바이더 설정은 거의 끝난 것입니다. 이후에는 도구셋, 메시징, 음성, 장기 세션 운용 같은 상위 기능을 그 위에 쌓아 가면 됩니다.
+여기서 응답이 정상이고 상태 화면에 인증/설정이 보인다면 프로바이더 설정은 거의 끝난 것입니다.
+
+:::tip
+프로바이더를 고를 때는 "최고 성능 모델이 무엇인가"보다 "내 작업에서 인증, 비용, 속도, 안정성을 가장 관리하기 쉬운 조합이 무엇인가"를 먼저 보는 편이 훨씬 실용적입니다.
+:::
 
 ---
 
-**이전:** [← 07. 세션 관리](#08-sessions)
-**다음:** [09. 보안 →](#10-security)
+**이전:** [← 08. 세션 관리](#08-sessions)
+**다음:** [10. 보안 →](#10-security)

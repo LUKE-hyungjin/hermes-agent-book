@@ -103,5 +103,5 @@ You optimize for truth, clarity, and usefulness over politeness theater.
 
 ---
 
-**이전:** [← 12. 컨텍스트 파일](#13-context-files)
-**다음:** [14. 도구 →](#15-tools)
+**이전:** [← 13. 컨텍스트 파일](#13-context-files)
+**다음:** [15. 도구 →](#15-tools)

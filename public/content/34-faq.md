@@ -34,6 +34,7 @@ hermes model
 # API base URL: http://localhost:11434/v1
 # API key: ollama
 # Model name: qwen3.5:27b
+# Context length: 32768
 ```
 
 또는 `config.yaml`에 직접 넣어도 됩니다.
@@ -102,5 +103,5 @@ Hermes 자체는 무료 오픈소스입니다. 비용은 사용자가 연결한 
 
 ---
 
-**이전:** [← 33. 환경 변수 레퍼런스](#33-env-vars)
+**이전:** [← 33. 핵심 환경 변수](#33-env-vars)
 **다음:** [35. 번들 스킬 카탈로그 →](#35-skills-catalog)

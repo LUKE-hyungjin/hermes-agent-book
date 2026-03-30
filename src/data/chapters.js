@@ -57,7 +57,7 @@ export const chapters = [
 
   // 부록
   { id: '32-cli-reference', num: '32', title: 'CLI 명령어 레퍼런스', category: 'reference' },
-  { id: '33-env-vars', num: '33', title: '환경변수', category: 'reference' },
+  { id: '33-env-vars', num: '33', title: '핵심 환경 변수', category: 'reference' },
   { id: '34-faq', num: '34', title: 'FAQ & 트러블슈팅', category: 'reference' },
   { id: '35-skills-catalog', num: '35', title: '스킬 카탈로그', category: 'reference' },
 ];

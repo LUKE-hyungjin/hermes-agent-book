@@ -119,5 +119,5 @@ Telegram은 설정 난도가 낮고 모바일 경험이 좋아, 메시징 게이
 
 ---
 
-**이전:** [← 16. 메시징 개요](#17-messaging-overview)
-**다음:** [18. Discord 설정 →](#19-discord)
+**이전:** [← 17. 메시징 개요](#17-messaging-overview)
+**다음:** [19. Discord 설정 →](#19-discord)
