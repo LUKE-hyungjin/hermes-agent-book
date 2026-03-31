@@ -2,6 +2,10 @@
 
 > API 서버를 켜면 Hermes를 OpenAI 호환 HTTP 백엔드로 노출할 수 있어, Open WebUI나 LobeChat 같은 프런트엔드가 Hermes를 "모델 서버"처럼 호출할 수 있습니다.
 
+:::tip
+이 장은 초보자의 첫 설정에는 필요하지 않습니다. 먼저 CLI나 메시징으로 Hermes 사용에 익숙해진 뒤, 다른 앱에서 Hermes를 붙이고 싶을 때 읽으면 됩니다.
+:::
+
 ## API 서버가 하는 일
 
 공식 문서의 핵심은 명확합니다. API 서버는 `hermes-agent`를 `/v1` 형태의 OpenAI 호환 엔드포인트로 감싸 줍니다. 외부 클라이언트는 일반적인 Chat Completions 또는 Responses API를 호출하는 것처럼 보이지만, 실제 내부에서는 Hermes가 터미널, 파일, 웹 검색, 메모리, 스킬 같은 전체 도구셋을 그대로 사용합니다.
@@ -17,9 +21,9 @@
 
 ## 빠른 시작
 
-먼저 `~/.hermes/.env`에 API 서버 관련 값을 넣습니다.
+먼저는 **로컬 테스트만** 하는 것이 가장 안전합니다. 아래 값은 `~/.hermes/.env` 파일에 넣습니다.
 
-```bash
+```dotenv
 API_SERVER_ENABLED=true
 API_SERVER_KEY=change-me-local-dev
 # 브라우저가 Hermes를 직접 호출해야 할 때만 지정

@@ -53,6 +53,8 @@ hermes profile create research --clone --clone-from coder
 
 공식 문서 기준 alias는 보통 `~/.local/bin/<profile-name>` 쪽에 만들어집니다. 따라서 프로필을 만든 뒤 `coder: command not found`가 나오면 PATH에 `~/.local/bin`이 들어 있는지 먼저 확인하세요.
 
+초보자는 먼저 alias보다 `-p` 플래그를 기본값으로 생각해도 충분합니다. 즉 `coder chat`보다 `hermes -p coder chat`이 더 확실한 시작점입니다.
+
 ```bash
 coder chat
 coder gateway start

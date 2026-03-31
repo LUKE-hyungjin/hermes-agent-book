@@ -41,7 +41,6 @@ hermes config
 hermes config edit
 hermes config set model anthropic/claude-opus-4
 hermes config set terminal.backend docker
-hermes config set OPENROUTER_API_KEY sk-or-...
 hermes config check
 hermes config migrate
 ```
@@ -49,7 +48,7 @@ hermes config migrate
 `hermes config set`은 꽤 똑똑합니다. API 키처럼 민감한 값은 자동으로 `.env`에 저장하고, 일반 키는 `config.yaml`에 넣습니다.
 
 :::tip
-직접 파일을 수정해도 되지만, 초반에는 `hermes config set`을 우선 쓰는 편이 안전합니다. 저장 위치를 실수할 가능성이 크게 줄어듭니다.
+직접 파일을 수정해도 되지만, 초반에는 `hermes config set`이나 `hermes model`을 우선 쓰는 편이 안전합니다. 다만 API 키 같은 비밀값은 터미널 명령줄에 직접 붙여넣기보다 `hermes model` 흐름이나 `.env` 편집으로 넣는 편이 더 안전합니다.
 :::
 
 ## 우선순위 규칙

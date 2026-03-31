@@ -20,7 +20,9 @@ Cron으로 실행된 세션 안에서는 다시 Cron 작업을 만들 수 없습
 
 ### 1. 채팅 안에서 `/cron`
 
-```bash
+아래는 **Hermes 세션 안에서** 입력하는 명령입니다.
+
+```text
 /cron add 30m "빌드 확인하라고 알려줘"
 /cron add "every 2h" "서버 상태를 점검해줘"
 /cron add "every 1h" "새 피드 항목을 요약해줘" --skill blogwatcher
@@ -46,6 +48,8 @@ hermes cron create "every 1h" "피드 요약" --skill blogwatcher
 Cron 작업은 프롬프트를 실행하기 전에 하나 이상의 스킬을 로드할 수 있습니다.
 
 ### 단일 스킬
+
+아래 코드는 내부 도구 구조를 설명하기 위한 예시입니다. 초보자는 이 코드를 직접 실행할 필요 없이, 보통 자연어 요청이나 `/cron` 명령만 써도 충분합니다.
 
 ```python
 cronjob(
@@ -75,7 +79,9 @@ cronjob(
 
 문서는 "작은 수정 때문에 지우고 다시 만들 필요는 없다"고 설명합니다.
 
-```bash
+아래는 **Hermes 세션 안에서** 입력하는 명령입니다.
+
+```text
 /cron edit <job_id> --schedule "every 4h"
 /cron edit <job_id> --prompt "수정된 작업 설명"
 /cron edit <job_id> --skill blogwatcher --skill find-nearby
@@ -101,7 +107,9 @@ hermes cron edit <job_id> --add-skill find-nearby
 
 Cron은 생성과 삭제만 있는 단순 객체가 아닙니다.
 
-```bash
+아래는 **Hermes 세션 안에서** 입력하는 명령입니다.
+
+```text
 /cron list
 /cron pause <job_id>
 /cron resume <job_id>
