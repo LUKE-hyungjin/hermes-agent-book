@@ -39,7 +39,7 @@ function processAdmonitions(markdown) {
     (match, type, content) => {
       const icon = iconMap[type] || '';
       const parsed = marked.parseInline(content.trim());
-      return `<div class="${type}-box"><strong>${icon} ${type.charAt(0).toUpperCase() + type.slice(1)}</strong><p class="mb-0">${parsed}</p></div>`;
+      return `\n<div class="${type}-box"><strong>${icon} ${type.charAt(0).toUpperCase() + type.slice(1)}</strong><p class="mb-0">${parsed}</p></div>\n\n`;
     }
   );
 }
