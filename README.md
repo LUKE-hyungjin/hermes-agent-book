@@ -1,6 +1,6 @@
 # Hermes Agent 한국어 가이드
 
-Hermes Agent v0.5.0 기준 한국어 가이드 웹사이트.
+Hermes Agent v0.6.0 기준 한국어 가이드 웹사이트.
 
 ## 개발
 

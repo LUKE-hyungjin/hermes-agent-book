@@ -34,6 +34,10 @@
 Slack은 권한 하나만 빠져도 "일부 채널에서만 안 되는" 애매한 상태가 되기 쉽습니다. DMs, 공개 채널, 비공개 채널을 따로 테스트하는 것이 안전합니다.
 :::
 
+### 0.6.0의 Slack 변화
+
+0.6.0부터는 **Slack multi-workspace OAuth**가 들어가, 하나의 Hermes 게이트웨이가 여러 Slack 워크스페이스와 연결되는 구성이 가능해졌습니다. 조직별로 bot token을 나눠 관리하면서도 Hermes 자체는 하나로 유지하고 싶을 때 특히 유용합니다.
+
 ## WhatsApp: 쉬운 진입, 높은 운영 주의
 
 Hermes의 WhatsApp 연동은 공식 Business API가 아니라 Baileys 기반 브리지로 동작합니다. Meta 개발자 계정이나 Business 인증이 필요 없다는 장점이 있지만, 문서도 분명히 말하듯 비공식 방식이므로 계정 제한 위험이 있습니다.
@@ -80,6 +84,15 @@ whatsapp:
 ## 그 밖의 채널
 
 메시징 개요에는 Signal, SMS, Email, Home Assistant, Mattermost, Matrix, DingTalk, Feishu/Lark, WeCom, 브라우저도 지원 대상으로 등장합니다. 다만 `docs-raw.txt`에서 상세 절차가 길게 풀린 것은 Slack과 WhatsApp 쪽입니다. 나머지는 보통 동일한 게이트웨이 개념, 허용 목록, 홈 채널, Cron 전달 구조를 공유한다고 이해하면 됩니다.
+
+0.6.0에서 특히 눈에 띄는 추가 플랫폼은 아래 둘입니다.
+
+| 플랫폼 | 의미 |
+|------|------|
+| Feishu / Lark | 중국권/글로벌 협업 도구용 신규 게이트웨이 어댑터 |
+| WeCom (Enterprise WeChat) | 기업용 WeChat 계열 메시징 연동 |
+
+즉 0.6.0부터 Hermes의 메시징 범위는 Telegram/Discord/Slack/WhatsApp를 넘어, 기업 협업 메신저 쪽까지 더 넓어졌다고 봐도 됩니다.
 
 ## 어떤 플랫폼을 고를까
 

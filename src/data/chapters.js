@@ -1,4 +1,4 @@
-// Chapter data for Hermes Agent Korean Guide v0.5.0
+// Chapter data for Hermes Agent Korean Guide v0.6.0
 // Each entry: id (hash), number, title, category, group order
 
 export const categories = [

@@ -51,7 +51,7 @@ function renderSidebar() {
         <span class="text-2xl">⚡</span>
         <span>Hermes Agent 가이드</span>
       </a>
-      <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">v0.5.0 한국어 가이드</p>
+      <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">v0.6.0 한국어 가이드</p>
     </div>
     <nav class="flex-1 overflow-y-auto sidebar-scroll py-2">
       ${categories.map(cat => {

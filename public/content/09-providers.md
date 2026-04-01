@@ -28,6 +28,21 @@ hermes model
 
 지원 목록은 버전마다 조금씩 바뀔 수 있으므로, **최종 기준은 `hermes model`과 공식 프로바이더 문서**로 보는 편이 안전합니다.
 
+## 0.6.0에서 특히 추가로 볼 것
+
+Hermes Agent 0.6.0부터는 `config.yaml`에 `fallback_providers`를 두어 **우선 프로바이더 실패 시 자동으로 다음 프로바이더로 넘어가는 체인**을 만들 수 있습니다.
+
+```yaml
+provider: openrouter
+model: anthropic/claude-sonnet-4.5
+
+fallback_providers:
+  - anthropic
+  - openai-codex
+```
+
+이 기능은 운영 환경에서 특히 유용합니다. 예를 들어 주 프로바이더가 일시적으로 오류를 내거나 rate limit에 걸릴 때, Hermes가 자동으로 다음 선택지로 넘어가도록 구성할 수 있습니다.
+
 ## 어떤 선택이 쉬운가요?
 
 | 목적 | 추천 시작점 |
