@@ -4,9 +4,18 @@ import hljs from 'highlight.js';
 // Custom marked renderer with highlight.js
 const renderer = new marked.Renderer();
 
-renderer.code = function ({ text, lang }) {
+renderer.code = function (code, infostring, escaped) {
+  // marked version compatibility: sometimes passes token-like object
+  let text = code;
+  let lang = infostring;
+
+  if (code && typeof code === 'object') {
+    text = code.text ?? '';
+    lang = code.lang ?? '';
+  }
+
   const language = lang && hljs.getLanguage(lang) ? lang : 'plaintext';
-  const highlighted = hljs.highlight(text, { language }).value;
+  const highlighted = hljs.highlight(String(text), { language }).value;
   return `<pre class="hljs"><code class="language-${language}">${highlighted}</code></pre>`;
 };
 
